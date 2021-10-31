@@ -18,3 +18,26 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 }
+
+#board {
+	min-height: 100vh;
+	background-color: #060404;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+td { 
+	width: 6rem;
+	height: 6rem;
+	text-align: center;
+	vertical-align: middle;
+	box-sizing: border-box;
+	border: 3px solid red;
+	font: normal 4rem sans-serif;
+}
