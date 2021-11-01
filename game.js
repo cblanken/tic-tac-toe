@@ -1,4 +1,5 @@
 const $ = (x) => document.querySelector(x);
+const $$ = (x) => document.querySelectorAll(x);
 
 const Player = (name, teamSymbol) => {
 	let score = 0;
@@ -12,24 +13,28 @@ const Player = (name, teamSymbol) => {
 		if (gameBoard.getCell(x, y) === "") {
 			gameBoard.setCell(x, y, teamSymbol)	
 			gameBoard.updateCellDisplay(x, y, teamSymbol);
+      gameBoard.nextTurn();
 		} else {
 			console.log(`This cell is already taken. Choose another.`);
 		}
 	};
 
-    return {getName, getTeamSymbol, getScore, incrementScore, play}
+  return {getName, getTeamSymbol, getScore, incrementScore, play}
 }
 
 const gameBoard = (() => {
 	'use strict';
 	const xMax = 3;
 	const yMax = 3;
+  let playerTurn = true; // first player's turn
 	let board = new Array(xMax).fill().map(() => Array(yMax).fill(""));
 	const getCell = (x, y) => {
 		if (x < xMax && y < yMax) {
 			return board[x][y];
 		}
 	}
+  const getTurn = () => { return playerTurn };
+  const nextTurn = () => { playerTurn = !playerTurn };
 	const setCell = (x, y, value) => {
 		if (x < xMax && y < yMax && typeof(value) === "string") {
 			board[x][y] = value;
@@ -49,16 +54,22 @@ const gameBoard = (() => {
 		}
 	};
 
-	return {board, getCell, setCell, updateCellDisplay, eraseCell};
+	return {board, getTurn, nextTurn, getCell, setCell, updateCellDisplay, eraseCell};
 })();
 
+// Game State and Events
 const player1 = Player("one", "X");
 const player2 = Player("two", "O");
+const players = [player1, player2];
 
-// Game Loop
-player1.play(1, 1, gameBoard);
-player2.play(2, 2, gameBoard);
-
-player1.play(2, 1, gameBoard);
-player2.play(0, 1, gameBoard);
+const displayCells = $$("#board .ttt-cell");
+displayCells.forEach(cell => {
+  cell.addEventListener("click", (event) => {
+    if (gameBoard.getTurn()) {
+      player1.play(cell.parentElement.dataset.row, cell.dataset.col, gameBoard);
+    } else {
+      player2.play(cell.parentElement.dataset.row, cell.dataset.col, gameBoard);
+    }
+  });
+});
 
