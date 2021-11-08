@@ -14,6 +14,9 @@ const Player = (name, teamSymbol) => {
             gameBoard.setCell(x, y, teamSymbol)
             gameBoard.updateCellDisplay(x, y, teamSymbol);
             gameBoard.nextTurn();
+            if (gameBoard.checkForWinner()) {
+                console.log(`GAME OVER Player ${name} WINS!`);
+            }
         } else {
             console.log(`This cell is already taken. Choose another.`);
         }
@@ -27,7 +30,8 @@ const gameBoard = (() => {
     const xMax = 3;
     const yMax = 3;
     let playerTurn = true; // first player's turn
-    let board = new Array(xMax).fill().map(() => Array(yMax).fill(""));
+    let board = new Array(yMax).fill().map(() => Array(xMax).fill(""));
+    let winningPattern = [];
     const getCell = (x, y) => {
         if (x < xMax && y < yMax) {
             return board[x][y];
@@ -54,7 +58,78 @@ const gameBoard = (() => {
         }
     };
 
-    return {board, getTurn, nextTurn, getCell, setCell, updateCellDisplay, eraseCell};
+    const checkForWinner = () => {
+        let isWinner = false;
+        
+        // Check rows
+        board.forEach((row, index) => {
+            // Skip row if winning state already found or
+            // any row starting with an empty cell
+            let firstCell = row[0];
+            if (firstCell === "" || isWinner) return;
+
+            // Winner if every cell in pattern matches
+            isWinner = row.every(cell => cell === firstCell);
+        });
+        
+        // Check columns
+        for (let col = 0; col < board[0].length; col++) {
+            // Skip column if it starts with an empty cell
+            const firstCell = board[0][col];
+            if (firstCell === "") continue;
+            
+            for (let row = 1; row < board.length; row++) {
+                const cell = board[row][col];     
+                if (cell !== firstCell) {
+                    break; // move on to next column
+                } else if (row === board.length - 1) {
+                    isWinner = true;
+                }
+            }
+        }
+    
+        // Check diagonals
+        if (board.length === board[0].length) {
+            const topLeft = board[0][0];
+            const topRight = board[0][board.length - 1];
+            // Top-left to bottom-right diagonal
+            for (let row = 0; row < board.length; row++) {
+                let col = row;
+                // Skip column if it starts with an empty cell
+                if (topLeft === "") break;
+
+                if (board[row][col] !== topLeft) {
+                    break; // move on to next diagonal
+                } else if (row === board.length - 1) {
+                    isWinner = true;
+                }
+            }
+            
+            // Top-right to bottom-left diagonal
+            for (let row = 0; row < board.length; row++) {
+                let col = board.length - row - 1;
+                // Skip column if it starts with an empty cell
+                if (topRight === "") break;
+
+                if (board[row][col] !== topRight) {
+                    break;
+                } else if (row === board.length - 1) {
+                    isWinner = true;
+                }
+            }
+        } else {
+            console.log("Board is not square. No diagonals to check.");
+        }
+
+        if (isWinner) {
+            return true;
+        } else {
+            return false; // No winner yet
+        }
+    }
+
+    return {board, getTurn, nextTurn, getCell, setCell, updateCellDisplay, eraseCell,
+        checkForWinner};
 })();
 
 // Game State and Events
