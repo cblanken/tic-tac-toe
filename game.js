@@ -77,9 +77,22 @@ const gameBoard = (() => {
         
     const eraseCell = (x, y) => {
         if (x < maxRow && y < maxCol && isLocked === false) {
-                board[x][y] = "";
+            board[x][y] = "";
+            updateCellDisplay(x, y);
         }
     };
+
+    const resetBoard = () => {
+        unlock();
+        board.forEach((row, yIndex) => {
+            row.forEach((col, xIndex) => {
+                eraseCell(yIndex, xIndex);
+            });
+        });
+        winningPattern = [];
+        isLocked = false;
+        playerTurn = true;
+    }
 
     const checkForWinner = () => {
         let isWinner = false;
@@ -159,7 +172,7 @@ const gameBoard = (() => {
         return (emptyCells.length === 0 && checkForWinner() === false);
     }
 
-    return {board, lock, unlock, getTurn, getLockStatus, nextTurn, getCell, setCell, updateCellDisplay, eraseCell, checkForWinner, checkForTie};
+    return {board, lock, unlock, resetBoard, getTurn, getLockStatus, nextTurn, getCell, setCell, updateCellDisplay, eraseCell, checkForWinner, checkForTie};
 })();
 
 // Game State and Events
@@ -178,3 +191,8 @@ displayCells.forEach(cell => {
   });
 });
 
+const resetBtn = $("#reset-button");
+resetBtn.addEventListener("click", (event) => {
+    console.log("reset board");
+    gameBoard.resetBoard();
+});

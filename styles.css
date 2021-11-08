@@ -63,6 +63,12 @@ td {
   font: normal 4rem sans-serif;
 }
 
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
 .input-container {
   display: flex;
   justify-content: flex-start;
