@@ -10,12 +10,17 @@ const Player = (name, teamSymbol) => {
         score++;
     }
     const play = (x, y, gameBoard) => {
+        if (gameBoard.getLockStatus() === true) {
+            console.log(`The game is over please restart the game.`);
+            return;
+        } 
         if (gameBoard.getCell(x, y) === "") {
             gameBoard.setCell(x, y, teamSymbol)
             gameBoard.updateCellDisplay(x, y, teamSymbol);
             gameBoard.nextTurn();
             if (gameBoard.checkForWinner()) {
                 console.log(`GAME OVER Player ${name} WINS!`);
+                gameBoard.lock();
             }
         } else {
             console.log(`This cell is already taken. Choose another.`);
@@ -32,6 +37,7 @@ const gameBoard = (() => {
     let playerTurn = true; // first player's turn
     let board = new Array(yMax).fill().map(() => Array(xMax).fill(""));
     let winningPattern = [];
+    let isLocked = false;
     const getCell = (x, y) => {
         if (x < xMax && y < yMax) {
             return board[x][y];
@@ -47,20 +53,33 @@ const gameBoard = (() => {
         }
     };
 
+    const unlock = () => {
+        isLocked = false;
+    }
+
+    const lock = () => {
+        isLocked = true;     
+    }
+
+    const getLockStatus = () => {
+        return isLocked;
+    }
+
     const updateCellDisplay = (x, y, value) => {
-        let cell = $(`#board tr[data-row="${x}"] td[data-col="${y}"]`);
-        cell.textContent = value;
+        if (isLocked === false) {
+            let cell = $(`#board tr[data-row="${x}"] td[data-col="${y}"]`);
+            cell.textContent = value;
+        }
     };
         
     const eraseCell = (x, y) => {
-        if (x < xMax && y < yMax) {
+        if (x < xMax && y < yMax && isLocked === false) {
                 board[x][y] = "";
         }
     };
 
     const checkForWinner = () => {
         let isWinner = false;
-        
         // Check rows
         board.forEach((row, index) => {
             // Skip row if winning state already found or
@@ -128,8 +147,8 @@ const gameBoard = (() => {
         }
     }
 
-    return {board, getTurn, nextTurn, getCell, setCell, updateCellDisplay, eraseCell,
-        checkForWinner};
+    return {board, lock, unlock, getTurn, getLockStatus, nextTurn, getCell, setCell, updateCellDisplay,
+        eraseCell, checkForWinner};
 })();
 
 // Game State and Events
