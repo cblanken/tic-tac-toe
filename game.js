@@ -22,6 +22,9 @@ const Player = (name, teamSymbol) => {
                 console.log(`GAME OVER Player ${name} WINS!`);
                 gameBoard.lock();
             }
+            if (gameBoard.checkForTie()) {
+                console.log(`GAME OVER! IT WAS A TIE!`);
+            }
         } else {
             console.log(`This cell is already taken. Choose another.`);
         }
@@ -147,8 +150,16 @@ const gameBoard = (() => {
         }
     }
 
-    return {board, lock, unlock, getTurn, getLockStatus, nextTurn, getCell, setCell, updateCellDisplay,
-        eraseCell, checkForWinner};
+    const checkForTie = () => {
+        let emptyCells = [];
+        board.forEach((row) => {
+            emptyCells = emptyCells.concat(row.filter(cell => cell === ""));
+        });
+
+        return (emptyCells.length === 0 && checkForWinner() === false);
+    }
+
+    return {board, lock, unlock, getTurn, getLockStatus, nextTurn, getCell, setCell, updateCellDisplay, eraseCell, checkForWinner, checkForTie};
 })();
 
 // Game State and Events
