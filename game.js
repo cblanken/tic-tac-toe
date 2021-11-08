@@ -32,21 +32,21 @@ const Player = (name, teamSymbol) => {
 
 const gameBoard = (() => {
     'use strict';
-    const xMax = 3;
-    const yMax = 3;
+    const maxRow = 3;
+    const maxCol = 3;
     let playerTurn = true; // first player's turn
-    let board = new Array(yMax).fill().map(() => Array(xMax).fill(""));
+    let board = new Array(maxCol).fill().map(() => Array(maxRow).fill(""));
     let winningPattern = [];
     let isLocked = false;
     const getCell = (x, y) => {
-        if (x < xMax && y < yMax) {
+        if (x < maxRow && y < maxCol) {
             return board[x][y];
         }
     }
     const getTurn = () => { return playerTurn };
     const nextTurn = () => { playerTurn = !playerTurn };
     const setCell = (x, y, value) => {
-        if (x < xMax && y < yMax && typeof(value) === "string") {
+        if (x < maxRow && y < maxCol && typeof(value) === "string") {
             board[x][y] = value;
         } else {
             console.log(`Invalid cell value: cannot set cell ${x},${y} to ${value}`);
@@ -73,7 +73,7 @@ const gameBoard = (() => {
     };
         
     const eraseCell = (x, y) => {
-        if (x < xMax && y < yMax && isLocked === false) {
+        if (x < maxRow && y < maxCol && isLocked === false) {
                 board[x][y] = "";
         }
     };
