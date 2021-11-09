@@ -12,7 +12,7 @@ const Player = (name, teamSymbol) => {
     }
     const play = (x, y, gameBoard) => {
         if (gameBoard.getLockStatus() === true) {
-            console.log(`The game is over please restart the game.`);
+            console.log(`The gameboard is locked please start or restart the game.`);
             return;
         } 
         if (gameBoard.getCell(x, y) === "") {
@@ -84,16 +84,20 @@ const gameBoard = (() => {
     };
 
     const resetBoard = () => {
-        unlock();
         board.forEach((row, yIndex) => {
             row.forEach((col, xIndex) => {
                 eraseCell(yIndex, xIndex);
             });
         });
+        lock();
         winningPattern = [];
-        isLocked = false;
         playerTurn = true;
-    }
+    };
+
+    const newGame = () => {
+        resetBoard();
+        unlock();
+    };
 
     const checkForWinner = () => {
         let isWinner = false;
@@ -173,7 +177,7 @@ const gameBoard = (() => {
         return (emptyCells.length === 0 && checkForWinner() === false);
     }
 
-    return {board, lock, unlock, resetBoard, getTurn, getLockStatus, nextTurn, getCell, setCell, updateCellDisplay, eraseCell, checkForWinner, checkForTie};
+    return {board, lock, unlock, resetBoard, newGame, getTurn, getLockStatus, nextTurn, getCell, setCell, updateCellDisplay, eraseCell, checkForWinner, checkForTie};
 })();
 
 // Game State and Events
@@ -182,6 +186,7 @@ const player2 = Player("two", "O");
 const players = [player1, player2];
 
 // Setup board events for players
+gameBoard.lock();
 const displayCells = $$("#board .ttt-cell");
 displayCells.forEach(cell => {
   cell.addEventListener("click", (event) => {
@@ -210,7 +215,6 @@ const player1NameInput = $("#sidebar input[name='player1-name']");
 const player1StatsName = $("#player1-name");
 const player1NameBtn = $("#player1-container input[name='player1-name'] + button");
 player1NameBtn.addEventListener("click", (event) => {
-    console.log(palyer1.NameInput.value);
     player1StatsName.textContent = player1NameInput.value;
     player1NameInput.value = "";
 });
@@ -236,6 +240,11 @@ player2NameBtn.addEventListener("click", (event) => {
 });
 
 // Other controls
+const newGameBtn = $("#new-game-button");
+newGameBtn.addEventListener("click", (event) => {
+    gameBoard.newGame();
+});
+
 const resetBtn = $("#reset-button");
 resetBtn.addEventListener("click", (event) => {
     gameBoard.resetBoard();

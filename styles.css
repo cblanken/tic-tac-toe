@@ -29,14 +29,15 @@ body {
   color: white;
 }
 
+main {
+  display: flex;
+  flex-direction: column;
+}
+
 button {
   background-color: #7B6B6B;
   padding: 0.5rem;
   border-radius: 4px;
-}
-
-button:hover {
-  font-style: bold;
 }
 
 #sidebar {
@@ -68,6 +69,18 @@ button:hover {
   height: auto;
 }
 
+#new-game-button {
+  display: inline-flex;
+  justify-content: space-between;
+  background-color: #5CA85C;
+  color: white;
+  font: normal 1.5rem monospace;
+  button-style: inset;
+  border: solid 2px white;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
 #reset-button {
   background-color: #9B6B6B;
   color: white;
@@ -75,6 +88,8 @@ button:hover {
   button-style: inset;
   border: solid 2px white;
   padding: 0.5rem;
+  margin-top: 20px;
+  cursor: pointer;
 }
 
 #board {
