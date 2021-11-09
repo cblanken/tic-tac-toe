@@ -29,6 +29,26 @@ body {
   color: white;
 }
 
+td { 
+  width: 6rem;
+  height: 6rem;
+  text-align: center;
+  vertical-align: middle;
+  box-sizing: border-box;
+  border: 5px solid red;
+  font: normal 4rem sans-serif;
+}
+
+button {
+  background-color: #7B6B6B;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+button:hover {
+  font-style: bold;
+}
+
 #sidebar {
   display: flex;
   flex-direction: column;
@@ -36,37 +56,9 @@ body {
 }
  
 #sidebar input {
-  display: inline;
-  background-color: red;
-}
-
-#sidebar button {
-  display: inline;        
-  background-color: blue;
-}
-
-#board {
-
-}
-
-#board table {
-  border-collapse: collapse;
-}
-
-td { 
-  width: 6rem;
-  height: 6rem;
-  text-align: center;
-  vertical-align: middle;
-  box-sizing: border-box;
-  border: 3px solid red;
-  font: normal 4rem sans-serif;
-}
-
-.controls {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+  background-color: #EEE;
+  line-height: 1rem;
+  font: normal 1.5rem 'sans-serif';
 }
 
 .input-container {
@@ -77,9 +69,32 @@ td {
 }
 
 .input-container button {
-  font: normal 1.25rem monospace;
+  font: normal 1.15rem monospace;
   text-align: center;
-  padding: 0.15rem;
+  padding: 0.35rem;
   color: white;
   height: auto;
+}
+
+#reset-button {
+  background-color: #9B6B6B;
+  color: white;
+  font: normal 1.5rem monospace;
+  button-style: inset;
+  border: solid 2px white;
+  padding: 0.5rem;
+}
+
+#board {
+
+}
+
+#board table {
+  border-collapse: collapse;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
 }
