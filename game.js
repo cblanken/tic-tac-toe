@@ -5,6 +5,7 @@ const Player = (name, teamSymbol) => {
     let score = 0;
     const getName = () => name;
     const getTeamSymbol = () => teamSymbol;
+    const setTeamSymbol = (x) => teamSymbol = x;
     const getScore = () => score;
     const incrementScore = () => { 
         score++;
@@ -30,7 +31,7 @@ const Player = (name, teamSymbol) => {
         }
     };
 
-    return {getName, getTeamSymbol, getScore, incrementScore, play}
+    return {getName, getTeamSymbol, setTeamSymbol, getScore, incrementScore, play}
 }
 
 const gameBoard = (() => {
@@ -180,6 +181,7 @@ const player1 = Player("one", "X");
 const player2 = Player("two", "O");
 const players = [player1, player2];
 
+// Setup board events for players
 const displayCells = $$("#board .ttt-cell");
 displayCells.forEach(cell => {
   cell.addEventListener("click", (event) => {
@@ -191,23 +193,49 @@ displayCells.forEach(cell => {
   });
 });
 
+// Setup player controls
+const player1Symbol = $("#player1-symbol");
+player1Symbol.textContent = player1.getTeamSymbol();
+const player1SymbolInput = $("#sidebar input[name='player1-symbol']");
+const player1StatsSymbol = $("#player1-symbol");
+const player1SymbolBtn = $("#player1-container input[name='player1-symbol'] + button");
+player1SymbolBtn.addEventListener("click", (event) => {
+    if (player1SymbolInput.value == "") return;
+    player1.setTeamSymbol(player1SymbolInput.value);
+    player1Symbol.textContent = player1SymbolInput.value;
+    player1SymbolInput.value = "";
+});
 
-const player1NameInput = $("#sidebar input[name='player1']");
-const player1NameBtn = $("#player1-container button");
+const player1NameInput = $("#sidebar input[name='player1-name']");
 const player1StatsName = $("#player1-name");
+const player1NameBtn = $("#player1-container input[name='player1-name'] + button");
 player1NameBtn.addEventListener("click", (event) => {
+    console.log(palyer1.NameInput.value);
     player1StatsName.textContent = player1NameInput.value;
     player1NameInput.value = "";
 });
 
-const player2NameInput = $("#sidebar input[name='player2']");
-const player2NameBtn = $("#player2-container button");
+const player2Symbol = $("#player2-symbol");
+player2Symbol.textContent = player2.getTeamSymbol();
+const player2SymbolInput = $("#sidebar input[name='player2-symbol']");
+const player2StatsSymbol = $("#player2-symbol");
+const player2SymbolBtn = $("#player2-container input[name='player2-symbol'] + button");
+player2SymbolBtn.addEventListener("click", (event) => {
+    if (player2SymbolInput.value == "") return;
+    player2.setTeamSymbol(player2SymbolInput.value);
+    player2Symbol.textContent = player2SymbolInput.value;
+    player2SymbolInput.value = "";
+});
+
+const player2NameInput = $("#sidebar input[name='player2-name']");
 const player2StatsName = $("#player2-name");
+const player2NameBtn = $("#player2-container input[name='player2-name'] + button");
 player2NameBtn.addEventListener("click", (event) => {
     player2StatsName.textContent = player2NameInput.value;
     player2NameInput.value = "";
 });
 
+// Other controls
 const resetBtn = $("#reset-button");
 resetBtn.addEventListener("click", (event) => {
     gameBoard.resetBoard();

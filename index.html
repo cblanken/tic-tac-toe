@@ -10,13 +10,26 @@
 
   <body>
     <div id="sidebar">
-      <div id="player1-container" class="input-container">
-        <input name="player1" type="text" maxlength="16" placeholder="Player 1">
-        <button>Submit</button>
+      <div id="player1-container">
+        <div class="player-input">
+          <input name="player1-name" type="text" maxlength="15" placeholder="Player 1">
+          <button>Submit</button>
+        </div>
+        <div class="player-input">
+          <input name="player1-symbol" type="text" maxlength="1" placeholder="X">
+          <button>Submit</button>
+        </div>
       </div>
-      <div id="player2-container" class="input-container">
-        <input name="player2" type="text" maxlength="16" placeholder="Player 2">
-        <button>Submit</button>
+
+      <div id="player2-container">
+        <div class="player-input">
+          <input name="player2-name" type="text" maxlength="15" placeholder="Player 2">
+          <button>Submit</button>
+        </div>
+        <div class="player-input">
+          <input name="player2-symbol" type="text" maxlength="1" placeholder="O">
+          <button>Submit</button>
+        </div>
       </div>
       <button id="reset-button" type="button">Reset</button>
     </div>

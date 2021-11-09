@@ -53,14 +53,14 @@ button:hover {
   padding-right: 0.5rem;
 }
 
-.input-container {
+.player-input {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
 }
 
-.input-container button {
+.player-input button {
   font: normal 1.15rem monospace;
   text-align: center;
   padding: 0.35rem;
@@ -87,7 +87,7 @@ button:hover {
   text-align: center;
   vertical-align: middle;
   box-sizing: border-box;
-  border: 5px solid red;
+  border: 7px solid red;
   font: normal 4rem sans-serif;
 }
 
@@ -101,4 +101,14 @@ button:hover {
   height: 3rem;
   font: normal 1.5rem monospace;
   padding: 0 1rem;
+}
+
+#player1-container,
+#player2-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #B35A5C;
+  padding: 1rem;
+  border-radius: 3px;
 }
