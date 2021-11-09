@@ -42,6 +42,9 @@ const gameBoard = (() => {
     let board = new Array(maxCol).fill().map(() => Array(maxRow).fill(""));
     let winningPattern = [];
     let isLocked = false;
+    let statusBarElement = $("#board-status-bar");
+    let lockStatusElement = $("#board-lock-status");
+    let readyStatusElement = $("#board-ready-status");
     const getCell = (x, y) => {
         if (x < maxRow && y < maxCol) {
             return board[x][y];
@@ -58,10 +61,20 @@ const gameBoard = (() => {
     };
 
     const unlock = () => {
+        if (isLocked) {
+            statusBarElement.classList.toggle("status-ready");
+            lockStatusElement.textContent = "🔓";
+            readyStatusElement.textContent = "READY!";
+        }
         isLocked = false;
     }
 
     const lock = () => {
+        if (!isLocked) {
+            statusBarElement.classList.toggle("status-ready");
+            lockStatusElement.textContent = "🔒";
+            readyStatusElement.textContent ="LOCKED";
+        }
         isLocked = true;     
     }
 
@@ -84,6 +97,7 @@ const gameBoard = (() => {
     };
 
     const resetBoard = () => {
+        unlock();
         board.forEach((row, yIndex) => {
             row.forEach((col, xIndex) => {
                 eraseCell(yIndex, xIndex);

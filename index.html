@@ -5,6 +5,7 @@
     <title>TIC TAC TOE</title>
     <meta charset="UTF-8"/>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
     <script src="game.js" defer></script>
   </head>
 
@@ -38,6 +39,10 @@
       </button>
     </div>
     <main>
+      <div id="board-status-bar" class="status-ready">
+        <div id="board-lock-status">🔒</div> 
+        <div id="board-ready-status">LOCKED</div>
+      </div>
       <div id="player1-stats" class="player-stats">
         <div id="player1-symbol">X</div>
         <div id="player1-name">Player 1</div>

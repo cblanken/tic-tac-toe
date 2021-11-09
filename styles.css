@@ -38,6 +38,7 @@ button {
   background-color: #7B6B6B;
   padding: 0.5rem;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 #sidebar {
@@ -52,6 +53,22 @@ button {
   font: normal 1.5rem 'sans-serif';
   text-align: right;
   padding-right: 0.5rem;
+}
+
+#board-status-bar {
+  display: flex;
+  justify-content: space-between;
+  background-color: #666;
+  font: bold 2rem monospace;
+  gap: 10px;
+}
+
+#board-status-bar.status-ready {
+  background-color: green;
+}
+
+#board-status-bar div {
+  padding: 0.5rem;
 }
 
 .player-input {
@@ -78,7 +95,6 @@ button {
   button-style: inset;
   border: solid 2px white;
   padding: 0.5rem;
-  cursor: pointer;
 }
 
 #reset-button {
@@ -89,7 +105,6 @@ button {
   border: solid 2px white;
   padding: 0.5rem;
   margin-top: 20px;
-  cursor: pointer;
 }
 
 #board {
