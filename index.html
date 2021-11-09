@@ -10,18 +10,23 @@
 
   <body>
     <div id="sidebar">
-      <div class="input-container">
-        <input name="player1" type="text">
-          <button>Enter</button>
+      <div id="player1-container" class="input-container">
+        <input name="player1" type="text" maxlength="16" placeholder="Player 1">
+        <button>Submit</button>
       </div>
-      <div class="input-container">
-        <input name="player2" type="text">
-        <button>Enter</button>
+      <div id="player2-container" class="input-container">
+        <input name="player2" type="text" maxlength="16" placeholder="Player 2">
+        <button>Submit</button>
       </div>
       <button id="reset-button" type="button">Reset</button>
     </div>
-    <main id="board">
-      <table>
+    <main>
+      <div id="player1-stats" class="player-stats">
+        <div id="player1-symbol">X</div>
+        <div id="player1-name">Player 1</div>
+        <div id="player1-score">0</div>
+      </div>
+      <table id="board">
         <tbody>
           <tr data-row="0">
             <td class="ttt-cell" data-col="0"></td>
@@ -40,7 +45,10 @@
           </tr>
         </tbody>
       <table>
-      <div class="controls">
+      <div id="player2-stats" class="player-stats">
+        <div id="player2-symbol">O</div>
+        <div id="player2-name">Player 2</div>
+        <div id="player2-score">0</div>
       </div>
     </main>
   </body>

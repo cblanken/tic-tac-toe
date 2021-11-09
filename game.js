@@ -191,8 +191,24 @@ displayCells.forEach(cell => {
   });
 });
 
+
+const player1NameInput = $("#sidebar input[name='player1']");
+const player1NameBtn = $("#player1-container button");
+const player1StatsName = $("#player1-name");
+player1NameBtn.addEventListener("click", (event) => {
+    player1StatsName.textContent = player1NameInput.value;
+    player1NameInput.value = "";
+});
+
+const player2NameInput = $("#sidebar input[name='player2']");
+const player2NameBtn = $("#player2-container button");
+const player2StatsName = $("#player2-name");
+player2NameBtn.addEventListener("click", (event) => {
+    player2StatsName.textContent = player2NameInput.value;
+    player2NameInput.value = "";
+});
+
 const resetBtn = $("#reset-button");
 resetBtn.addEventListener("click", (event) => {
-    console.log("reset board");
     gameBoard.resetBoard();
 });

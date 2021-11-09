@@ -29,16 +29,6 @@ body {
   color: white;
 }
 
-td { 
-  width: 6rem;
-  height: 6rem;
-  text-align: center;
-  vertical-align: middle;
-  box-sizing: border-box;
-  border: 5px solid red;
-  font: normal 4rem sans-serif;
-}
-
 button {
   background-color: #7B6B6B;
   padding: 0.5rem;
@@ -59,6 +49,8 @@ button:hover {
   background-color: #EEE;
   line-height: 1rem;
   font: normal 1.5rem 'sans-serif';
+  text-align: right;
+  padding-right: 0.5rem;
 }
 
 .input-container {
@@ -86,15 +78,27 @@ button:hover {
 }
 
 #board {
-
-}
-
-#board table {
   border-collapse: collapse;
 }
 
-.controls {
+#board td { 
+  width: 7rem;
+  height: 7rem;
+  text-align: center;
+  vertical-align: middle;
+  box-sizing: border-box;
+  border: 5px solid red;
+  font: normal 4rem sans-serif;
+}
+
+.player-stats {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  background-color: red;
+  height: 3rem;
+  font: normal 1.5rem monospace;
+  padding: 0 1rem;
 }
