@@ -21,6 +21,7 @@ const Player = (name, teamSymbol) => {
             gameBoard.nextTurn();
             if (gameBoard.checkForWinner()) {
                 console.log(`GAME OVER Player ${name} WINS!`);
+                incrementScore();
                 gameBoard.lock();
             }
             if (gameBoard.checkForTie()) {
@@ -199,15 +200,20 @@ const player1 = Player("one", "X");
 const player2 = Player("two", "O");
 const players = [player1, player2];
 
+const player1ScoreElement = $("#player1-score");
+const player2ScoreElement = $("#player2-score");
+
 // Setup board events for players
 gameBoard.lock();
 const displayCells = $$("#board .ttt-cell");
 displayCells.forEach(cell => {
   cell.addEventListener("click", (event) => {
     if (gameBoard.getTurn()) {
-      player1.play(cell.parentElement.dataset.row, cell.dataset.col, gameBoard);
+        player1.play(cell.parentElement.dataset.row, cell.dataset.col, gameBoard);
+        player1ScoreElement.textContent = player1.getScore().toString();
     } else {
-      player2.play(cell.parentElement.dataset.row, cell.dataset.col, gameBoard);
+        player2.play(cell.parentElement.dataset.row, cell.dataset.col, gameBoard);
+        player2ScoreElement.textContent = player2.getScore().toString();
     }
   });
 });
