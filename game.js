@@ -1,5 +1,85 @@
+import * as minimax from "./minimax_ai.js";
+
 const $ = (x) => document.querySelector(x);
 const $$ = (x) => document.querySelectorAll(x);
+
+function checkForWinner(board) {
+    let isWinner = false;
+    // Check rows
+    board.forEach((row, index) => {
+        // Skip row if winning state already found or
+        // any row starting with an empty cell
+        let firstCell = row[0];
+        if (firstCell === "" || isWinner) return;
+
+        // Winner if every cell in pattern matches
+        isWinner = row.every(cell => cell === firstCell);
+    });
+    
+    // Check columns
+    for (let col = 0; col < board[0].length; col++) {
+        // Skip column if it starts with an empty cell
+        const firstCell = board[0][col];
+        if (firstCell === "") continue;
+        
+        for (let row = 1; row < board.length; row++) {
+            const cell = board[row][col];     
+            if (cell !== firstCell) {
+                break; // move on to next column
+            } else if (row === board.length - 1) {
+                isWinner = true;
+            }
+        }
+    }
+
+    // Check diagonals
+    if (board.length === board[0].length) {
+        const topLeft = board[0][0];
+        const topRight = board[0][board.length - 1];
+        // Top-left to bottom-right diagonal
+        for (let row = 0; row < board.length; row++) {
+            let col = row;
+            // Skip column if it starts with an empty cell
+            if (topLeft === "") break;
+
+            if (board[row][col] !== topLeft) {
+                break; // move on to next diagonal
+            } else if (row === board.length - 1) {
+                isWinner = true;
+            }
+        }
+        
+        // Top-right to bottom-left diagonal
+        for (let row = 0; row < board.length; row++) {
+            let col = board.length - row - 1;
+            // Skip column if it starts with an empty cell
+            if (topRight === "") break;
+
+            if (board[row][col] !== topRight) {
+                break;
+            } else if (row === board.length - 1) {
+                isWinner = true;
+            }
+        }
+    } else {
+        console.log("Board is not square. No diagonals to check.");
+    }
+
+    if (isWinner) {
+        return true;
+    } else {
+        return false; // No winner yet
+    }
+}
+
+function checkForTie(board) {
+    let emptyCells = [];
+    board.forEach((row) => {
+        emptyCells = emptyCells.concat(row.filter(cell => cell === ""));
+    });
+
+    return (emptyCells.length === 0 && checkForWinner(board) === false);
+}
 
 const Player = (name, teamSymbol) => {
     let score = 0;
@@ -19,12 +99,12 @@ const Player = (name, teamSymbol) => {
             gameBoard.setCell(x, y, teamSymbol)
             gameBoard.updateCellDisplay(x, y, teamSymbol);
             gameBoard.nextTurn();
-            if (gameBoard.checkForWinner()) {
+            if (checkForWinner(gameBoard.board)) {
                 console.log(`GAME OVER Player ${name} WINS!`);
                 incrementScore();
                 gameBoard.lock();
             }
-            if (gameBoard.checkForTie()) {
+            if (checkForTie(gameBoard.board)) {
                 console.log(`GAME OVER! IT WAS A TIE!`);
             }
         } else {
@@ -33,10 +113,11 @@ const Player = (name, teamSymbol) => {
     };
 
     return {getName, getTeamSymbol, setTeamSymbol, getScore, incrementScore, play}
-}
+};
 
 const gameBoard = (() => {
     'use strict';
+    const EMPTY = "";
     const maxRow = 3;
     const maxCol = 3;
     let playerTurn = true; // first player's turn
@@ -50,7 +131,10 @@ const gameBoard = (() => {
         if (x < maxRow && y < maxCol) {
             return board[x][y];
         }
-    }
+    };
+    const isCellEmpty = (row, col) => {
+        return board[row][col] === EMPTY;
+    };
     const getTurn = () => { return playerTurn };
     const nextTurn = () => { playerTurn = !playerTurn };
     const setCell = (x, y, value) => {
@@ -114,85 +198,7 @@ const gameBoard = (() => {
         unlock();
     };
 
-    const checkForWinner = () => {
-        let isWinner = false;
-        // Check rows
-        board.forEach((row, index) => {
-            // Skip row if winning state already found or
-            // any row starting with an empty cell
-            let firstCell = row[0];
-            if (firstCell === "" || isWinner) return;
-
-            // Winner if every cell in pattern matches
-            isWinner = row.every(cell => cell === firstCell);
-        });
-        
-        // Check columns
-        for (let col = 0; col < board[0].length; col++) {
-            // Skip column if it starts with an empty cell
-            const firstCell = board[0][col];
-            if (firstCell === "") continue;
-            
-            for (let row = 1; row < board.length; row++) {
-                const cell = board[row][col];     
-                if (cell !== firstCell) {
-                    break; // move on to next column
-                } else if (row === board.length - 1) {
-                    isWinner = true;
-                }
-            }
-        }
-    
-        // Check diagonals
-        if (board.length === board[0].length) {
-            const topLeft = board[0][0];
-            const topRight = board[0][board.length - 1];
-            // Top-left to bottom-right diagonal
-            for (let row = 0; row < board.length; row++) {
-                let col = row;
-                // Skip column if it starts with an empty cell
-                if (topLeft === "") break;
-
-                if (board[row][col] !== topLeft) {
-                    break; // move on to next diagonal
-                } else if (row === board.length - 1) {
-                    isWinner = true;
-                }
-            }
-            
-            // Top-right to bottom-left diagonal
-            for (let row = 0; row < board.length; row++) {
-                let col = board.length - row - 1;
-                // Skip column if it starts with an empty cell
-                if (topRight === "") break;
-
-                if (board[row][col] !== topRight) {
-                    break;
-                } else if (row === board.length - 1) {
-                    isWinner = true;
-                }
-            }
-        } else {
-            console.log("Board is not square. No diagonals to check.");
-        }
-
-        if (isWinner) {
-            return true;
-        } else {
-            return false; // No winner yet
-        }
-    }
-
-    const checkForTie = () => {
-        let emptyCells = [];
-        board.forEach((row) => {
-            emptyCells = emptyCells.concat(row.filter(cell => cell === ""));
-        });
-
-        return (emptyCells.length === 0 && checkForWinner() === false);
-    }
-
-    return {board, lock, unlock, resetBoard, newGame, getTurn, getLockStatus, nextTurn, getCell, setCell, updateCellDisplay, eraseCell, checkForWinner, checkForTie};
+    return {board, lock, unlock, resetBoard, newGame, getTurn, getLockStatus, nextTurn, getCell, isCellEmpty, setCell, updateCellDisplay, eraseCell};
 })();
 
 // Game State and Events
@@ -207,18 +213,22 @@ const player2ScoreElement = $("#player2-score");
 gameBoard.lock();
 const displayCells = $$("#board .ttt-cell");
 displayCells.forEach(cell => {
-  cell.addEventListener("click", (event) => {
-    if (gameBoard.getTurn()) {
-        player1.play(cell.parentElement.dataset.row, cell.dataset.col, gameBoard);
-        player1ScoreElement.textContent = player1.getScore().toString();
-    } else {
-        player2.play(cell.parentElement.dataset.row, cell.dataset.col, gameBoard);
-        player2ScoreElement.textContent = player2.getScore().toString();
-    }
-  });
+    cell.addEventListener("click", (event) => {
+        let row = cell.parentElement.dataset.row;
+        let col = cell.dataset.col;
+        if (gameBoard.getTurn()) {
+            player1.play(row, col, gameBoard);
+            player1ScoreElement.textContent = player1.getScore().toString();
+        } else {
+            player2.play(row, col, gameBoard);
+            player2ScoreElement.textContent = player2.getScore().toString();
+            let node = minimax.Node(gameBoard.board, [row, col], [player1, player2], 1);
+            //console.log(node);
+        }
+    });
 });
 
-// Setup player controls
+// Setup player 1 controls
 const player1Symbol = $("#player1-symbol");
 player1Symbol.textContent = player1.getTeamSymbol();
 const player1SymbolInput = $("#sidebar input[name='player1-symbol']");
@@ -230,7 +240,6 @@ player1SymbolBtn.addEventListener("click", (event) => {
     player1Symbol.textContent = player1SymbolInput.value;
     player1SymbolInput.value = "";
 });
-
 const player1NameInput = $("#sidebar input[name='player1-name']");
 const player1StatsName = $("#player1-name");
 const player1NameBtn = $("#player1-container input[name='player1-name'] + button");
@@ -239,6 +248,7 @@ player1NameBtn.addEventListener("click", (event) => {
     player1NameInput.value = "";
 });
 
+// Setup player 2 controls
 const player2Symbol = $("#player2-symbol");
 player2Symbol.textContent = player2.getTeamSymbol();
 const player2SymbolInput = $("#sidebar input[name='player2-symbol']");
@@ -250,7 +260,6 @@ player2SymbolBtn.addEventListener("click", (event) => {
     player2Symbol.textContent = player2SymbolInput.value;
     player2SymbolInput.value = "";
 });
-
 const player2NameInput = $("#sidebar input[name='player2-name']");
 const player2StatsName = $("#player2-name");
 const player2NameBtn = $("#player2-container input[name='player2-name'] + button");
@@ -264,7 +273,6 @@ const newGameBtn = $("#new-game-button");
 newGameBtn.addEventListener("click", (event) => {
     gameBoard.newGame();
 });
-
 const resetBtn = $("#reset-button");
 resetBtn.addEventListener("click", (event) => {
     gameBoard.resetBoard();
