@@ -70,7 +70,8 @@ function checkForWinner(board) {
     } else {
         return false; // No winner yet
     }
-}
+};
+
 
 function checkForTie(board) {
     let emptyCells = [];
@@ -222,7 +223,7 @@ displayCells.forEach(cell => {
         } else {
             player2.play(row, col, gameBoard);
             player2ScoreElement.textContent = player2.getScore().toString();
-            let node = minimax.Node(gameBoard.board, [row, col], [player1, player2], 1);
+            //let node = minimax.Node(gameBoard.board, [row, col], [player1, player2], 1);
             //console.log(node);
         }
     });
@@ -277,3 +278,6 @@ const resetBtn = $("#reset-button");
 resetBtn.addEventListener("click", (event) => {
     gameBoard.resetBoard();
 });
+
+
+export { checkForWinner, checkForTie };
