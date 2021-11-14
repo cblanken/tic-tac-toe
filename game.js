@@ -3,14 +3,15 @@ import * as minimax from "./minimax_ai.js";
 const $ = (x) => document.querySelector(x);
 const $$ = (x) => document.querySelectorAll(x);
 
-function checkForWinner(board) {
+function checkForWinner(board, playerSymbol) {
     let isWinner = false;
     // Check rows
     board.forEach((row, index) => {
         // Skip row if winning state already found or
         // any row starting with an empty cell
         let firstCell = row[0];
-        if (firstCell === "" || isWinner) return;
+
+        if (firstCell !== playerSymbol && playerSymbol !== undefined) return;
 
         // Winner if every cell in pattern matches
         isWinner = row.every(cell => cell === firstCell);
@@ -20,7 +21,7 @@ function checkForWinner(board) {
     for (let col = 0; col < board[0].length; col++) {
         // Skip column if it starts with an empty cell
         const firstCell = board[0][col];
-        if (firstCell === "") continue;
+        if (firstCell !== playerSymbol && playerSymbol !== undefined) continue;
         
         for (let row = 1; row < board.length; row++) {
             const cell = board[row][col];     
@@ -40,7 +41,7 @@ function checkForWinner(board) {
         for (let row = 0; row < board.length; row++) {
             let col = row;
             // Skip column if it starts with an empty cell
-            if (topLeft === "") break;
+            if (topLeft !== playerSymbol && playerSymbol !== undefined) break;
 
             if (board[row][col] !== topLeft) {
                 break; // move on to next diagonal
@@ -53,7 +54,7 @@ function checkForWinner(board) {
         for (let row = 0; row < board.length; row++) {
             let col = board.length - row - 1;
             // Skip column if it starts with an empty cell
-            if (topRight === "") break;
+            if (topRight !== playerSymbol && playerSymbol !== undefined) break;
 
             if (board[row][col] !== topRight) {
                 break;
@@ -100,12 +101,12 @@ const Player = (name, teamSymbol) => {
             gameBoard.setCell(x, y, teamSymbol)
             gameBoard.updateCellDisplay(x, y, teamSymbol);
             gameBoard.nextTurn();
-            if (checkForWinner(gameBoard.board)) {
+            if (checkForWinner(gameBoard.board, teamSymbol)) {
                 console.log(`GAME OVER Player ${name} WINS!`);
                 incrementScore();
                 gameBoard.lock();
             }
-            if (checkForTie(gameBoard.board)) {
+            if (checkForTie(gameBoard.board, teamSymbol)) {
                 console.log(`GAME OVER! IT WAS A TIE!`);
             }
         } else {
@@ -122,8 +123,8 @@ const gameBoard = (() => {
     const maxRow = 3;
     const maxCol = 3;
     let playerTurn = true; // first player's turn
+    const getTurn = () => { return playerTurn };
     let board = new Array(maxCol).fill().map(() => Array(maxRow).fill(""));
-    let winningPattern = [];
     let isLocked = false;
     let statusBarElement = $("#board-status-bar");
     let lockStatusElement = $("#board-lock-status");
@@ -136,7 +137,6 @@ const gameBoard = (() => {
     const isCellEmpty = (row, col) => {
         return board[row][col] === EMPTY;
     };
-    const getTurn = () => { return playerTurn };
     const nextTurn = () => { playerTurn = !playerTurn };
     const setCell = (x, y, value) => {
         if (x < maxRow && y < maxCol && typeof(value) === "string") {
@@ -190,7 +190,6 @@ const gameBoard = (() => {
             });
         });
         lock();
-        winningPattern = [];
         playerTurn = true;
     };
 
@@ -199,32 +198,52 @@ const gameBoard = (() => {
         unlock();
     };
 
-    return {board, lock, unlock, resetBoard, newGame, getTurn, getLockStatus, nextTurn, getCell, isCellEmpty, setCell, updateCellDisplay, eraseCell};
+    return { board, lock, unlock, resetBoard, newGame, getTurn, getLockStatus, nextTurn, getCell, isCellEmpty, setCell, updateCellDisplay, eraseCell };
 })();
 
 // Game State and Events
-const player1 = Player("one", "X");
-const player2 = Player("two", "O");
-const players = [player1, player2];
+const player1 = Player("Player 1", "X");
+const player2 = Player("Player 2", "O");
 
 const player1ScoreElement = $("#player1-score");
 const player2ScoreElement = $("#player2-score");
 
 // Setup board events for players
+//player1.play(0, 0, gameBoard);
+//player2.play(1, 1, gameBoard);
+//player1.play(2, 0, gameBoard);
+//player2.play(1, 0, gameBoard);
+//player1.play(2, 2, gameBoard);
+
 gameBoard.lock();
 const displayCells = $$("#board .ttt-cell");
 displayCells.forEach(cell => {
     cell.addEventListener("click", (event) => {
-        let row = cell.parentElement.dataset.row;
-        let col = cell.dataset.col;
+        let row = Number(cell.parentElement.dataset.row);
+        let col = Number(cell.dataset.col);
         if (gameBoard.getTurn()) {
+
+            // Player turn
             player1.play(row, col, gameBoard);
             player1ScoreElement.textContent = player1.getScore().toString();
+            
+            // AI turn
+            let rootNode = minimax.Node(gameBoard.board, [row, col]); 
+            rootNode = minimax.buildGameTree(rootNode, player1, player2, true);
+            let bestMove = minimax.findBestMove(rootNode, player1, player2);
+            
+            if (bestMove) {
+                player2.play(bestMove[0], bestMove[1], gameBoard);
+                player2ScoreElement.textContent = player2.getScore().toString();
+            }
         } else {
-            player2.play(row, col, gameBoard);
-            player2ScoreElement.textContent = player2.getScore().toString();
-            //let node = minimax.Node(gameBoard.board, [row, col], [player1, player2], 1);
-            //console.log(node);
+            //let rootNode = minimax.Node(gameBoard.board, [row, col]); 
+            //rootNode = minimax.buildGameTree(rootNode, player1, player2, true);
+            //let bestMove = minimax.findBestMove(rootNode, player1, player2);
+            //console.log(`bestMove: ${bestMove}`);
+            
+            //player2.play(bestMove[0], bestMove[1], gameBoard);
+            //player2ScoreElement.textContent = player2.getScore().toString();
         }
     });
 });
@@ -278,6 +297,5 @@ const resetBtn = $("#reset-button");
 resetBtn.addEventListener("click", (event) => {
     gameBoard.resetBoard();
 });
-
 
 export { checkForWinner, checkForTie };
