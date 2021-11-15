@@ -86,6 +86,11 @@ button {
   height: auto;
 }
 
+.player-input select {
+  width: 100%;
+  font-size: 1.5rem;
+}
+
 #new-game-button {
   display: inline-flex;
   justify-content: space-between;

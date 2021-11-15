@@ -73,7 +73,6 @@ function checkForWinner(board, playerSymbol) {
     }
 };
 
-
 function checkForTie(board) {
     let emptyCells = [];
     board.forEach((row) => {
@@ -83,7 +82,7 @@ function checkForTie(board) {
     return (emptyCells.length === 0 && checkForWinner(board) === false);
 }
 
-const Player = (name, teamSymbol) => {
+const Player = (name, teamSymbol, isHuman = true) => {
     let score = 0;
     const getName = () => name;
     const getTeamSymbol = () => teamSymbol;
@@ -92,6 +91,7 @@ const Player = (name, teamSymbol) => {
     const incrementScore = () => { 
         score++;
     }
+
     const play = (x, y, gameBoard) => {
         if (gameBoard.getLockStatus() === true) {
             console.log(`The gameboard is locked please start or restart the game.`);
@@ -100,23 +100,103 @@ const Player = (name, teamSymbol) => {
         if (gameBoard.getCell(x, y) === "") {
             gameBoard.setCell(x, y, teamSymbol)
             gameBoard.updateCellDisplay(x, y, teamSymbol);
-            gameBoard.nextTurn();
             if (checkForWinner(gameBoard.board, teamSymbol)) {
                 console.log(`GAME OVER Player ${name} WINS!`);
                 incrementScore();
                 gameBoard.lock();
-            }
-            if (checkForTie(gameBoard.board, teamSymbol)) {
+            } else if (checkForTie(gameBoard.board, teamSymbol)) {
                 console.log(`GAME OVER! IT WAS A TIE!`);
+                gameBoard.lock();
+            } else {
+                gameBoard.nextTurn();
             }
         } else {
             console.log(`This cell is already taken. Choose another.`);
         }
     };
 
-    return {getName, getTeamSymbol, setTeamSymbol, getScore, incrementScore, play}
+    return {getName, getTeamSymbol, setTeamSymbol, getScore, isHuman, incrementScore, play}
 };
 
+// Game State and Events
+const player1 = Player("Player 1", "X", true);
+const player2 = Player("Player 2", "O", false);
+
+const player1ScoreElement = $("#player1-score");
+const player2ScoreElement = $("#player2-score");
+
+// Setup player 1 controls
+const player1Symbol = $("#player1-symbol");
+player1Symbol.textContent = player1.getTeamSymbol();
+const player1SymbolInput = $("#sidebar input[name='player1-symbol']");
+const player1StatsSymbol = $("#player1-symbol");
+const player1SymbolBtn = $("#player1-container input[name='player1-symbol'] + button");
+player1SymbolBtn.addEventListener("click", (event) => {
+    if (player1SymbolInput.value == "") return;
+    player1.setTeamSymbol(player1SymbolInput.value);
+    player1Symbol.textContent = player1SymbolInput.value;
+    player1SymbolInput.value = "";
+});
+const player1NameInput = $("#sidebar input[name='player1-name']");
+const player1StatsName = $("#player1-name");
+const player1NameBtn = $("#player1-container input[name='player1-name'] + button");
+player1NameBtn.addEventListener("click", (event) => {
+    player1StatsName.textContent = player1NameInput.value;
+    if (player1NameInput.value = "human");
+});
+
+const player1InputType = $("#player1-container select[name='player-type']");
+const player1InputTypeBtn = $("#player1-container select[name='player-type'] + button");
+player1InputTypeBtn.addEventListener("click", (event) => {
+    if (player1InputType.value === "Human") {
+        player1.isHuman = true;
+    } else {
+        player1.isHuman = false;
+    }
+    console.log(player1.isHuman);
+});
+
+// Setup player 2 controls
+const player2Symbol = $("#player2-symbol");
+player2Symbol.textContent = player2.getTeamSymbol();
+const player2SymbolInput = $("#sidebar input[name='player2-symbol']");
+const player2StatsSymbol = $("#player2-symbol");
+const player2SymbolBtn = $("#player2-container input[name='player2-symbol'] + button");
+player2SymbolBtn.addEventListener("click", (event) => {
+    if (player2SymbolInput.value == "") return;
+    player2.setTeamSymbol(player2SymbolInput.value);
+    player2Symbol.textContent = player2SymbolInput.value;
+    player2SymbolInput.value = "";
+});
+const player2NameInput = $("#sidebar input[name='player2-name']");
+const player2StatsName = $("#player2-name");
+const player2NameBtn = $("#player2-container input[name='player2-name'] + button");
+player2NameBtn.addEventListener("click", (event) => {
+    player2StatsName.textContent = player2NameInput.value;
+    player2NameInput.value = "";
+});
+
+const player2InputType = $("#player2-container select");
+const player2InputTypeBtn = $("#player2-container select[name='player-type'] + button");
+player2InputTypeBtn.addEventListener("click", (event) => {
+    if (player2InputType.value === "Human") {
+        player2.isHuman = true;
+    } else {
+        player2.isHuman = false;
+    }
+});
+
+// Other controls
+const newGameBtn = $("#new-game-button");
+newGameBtn.addEventListener("click", (event) => {
+    gameBoard.newGame(player1, player2);
+});
+const resetBtn = $("#reset-button");
+resetBtn.addEventListener("click", (event) => {
+    gameBoard.resetBoard();
+});
+
+// Gameboard setup
 const gameBoard = (() => {
     'use strict';
     const EMPTY = "";
@@ -137,7 +217,32 @@ const gameBoard = (() => {
     const isCellEmpty = (row, col) => {
         return board[row][col] === EMPTY;
     };
-    const nextTurn = () => { playerTurn = !playerTurn };
+    const aiTurn = () => {
+        // Performs a turn for the AI if enabled
+        if (playerTurn && !player1.isHuman) {
+            let rootNode = minimax.Node(gameBoard.board, []); 
+            rootNode = minimax.buildGameTree(rootNode, player2, player1, true);
+            let bestMove = minimax.findBestMove(rootNode, player2, player1);
+            
+            if (bestMove) {
+                player1.play(bestMove[0], bestMove[1], gameBoard);
+                player1ScoreElement.textContent = player1.getScore().toString();
+            }
+        } else if (!playerTurn && !player2.isHuman) {
+            let rootNode = minimax.Node(gameBoard.board, []); 
+            rootNode = minimax.buildGameTree(rootNode, player1, player2, true);
+            let bestMove = minimax.findBestMove(rootNode, player1, player2);
+            
+            if (bestMove) {
+                player2.play(bestMove[0], bestMove[1], gameBoard);
+                player2ScoreElement.textContent = player2.getScore().toString();
+            }
+        }
+    }
+    const nextTurn = () => { 
+        playerTurn = !playerTurn 
+        aiTurn(); 
+    };
     const setCell = (x, y, value) => {
         if (x < maxRow && y < maxCol && typeof(value) === "string") {
             board[x][y] = value;
@@ -193,109 +298,48 @@ const gameBoard = (() => {
         playerTurn = true;
     };
 
-    const newGame = () => {
+    const newGame = (player1, player2) => {
         resetBoard();
         unlock();
+        aiTurn();
     };
 
-    return { board, lock, unlock, resetBoard, newGame, getTurn, getLockStatus, nextTurn, getCell, isCellEmpty, setCell, updateCellDisplay, eraseCell };
+    const addBoardEvents = (player1, player2) => {
+        const displayCells = $$("#board .ttt-cell");
+        displayCells.forEach(cell => {
+            cell.addEventListener("click", (event) => {
+                let row = Number(cell.parentElement.dataset.row);
+                let col = Number(cell.dataset.col);
+                if (gameBoard.getTurn() && player1.isHuman) {
+                    // Player 1 turn
+                    player1.play(row, col, gameBoard);
+                    player1ScoreElement.textContent = player1.getScore().toString();
+                } else if (!gameBoard.getTurn() && player2.isHuman) {
+                    // Player 2 turn
+                    player2.play(row, col, gameBoard);
+                    player2ScoreElement.textContent = player2.getScore().toString();
+                }
+            });
+        });
+    };
+
+    const clearBoardEvents = () => {
+        const displayCells = $$("#board .ttt-cell");
+        displayCells.forEach(cell => {
+            cell.click = null;
+        });
+    };
+
+    return { board, lock, unlock, resetBoard, newGame, getTurn, getLockStatus, nextTurn, getCell, isCellEmpty, setCell, updateCellDisplay, eraseCell, addBoardEvents, clearBoardEvents };
 })();
 
-// Game State and Events
-const player1 = Player("Player 1", "X");
-const player2 = Player("Player 2", "O");
-
-const player1ScoreElement = $("#player1-score");
-const player2ScoreElement = $("#player2-score");
-
-// Setup board events for players
-//player1.play(0, 0, gameBoard);
-//player2.play(1, 1, gameBoard);
-//player1.play(2, 0, gameBoard);
-//player2.play(1, 0, gameBoard);
-//player1.play(2, 2, gameBoard);
-
+gameBoard.addBoardEvents(player1, player2);
 gameBoard.lock();
-const displayCells = $$("#board .ttt-cell");
-displayCells.forEach(cell => {
-    cell.addEventListener("click", (event) => {
-        let row = Number(cell.parentElement.dataset.row);
-        let col = Number(cell.dataset.col);
-        if (gameBoard.getTurn()) {
 
-            // Player turn
-            player1.play(row, col, gameBoard);
-            player1ScoreElement.textContent = player1.getScore().toString();
-            
-            // AI turn
-            let rootNode = minimax.Node(gameBoard.board, [row, col]); 
-            rootNode = minimax.buildGameTree(rootNode, player1, player2, true);
-            let bestMove = minimax.findBestMove(rootNode, player1, player2);
-            
-            if (bestMove) {
-                player2.play(bestMove[0], bestMove[1], gameBoard);
-                player2ScoreElement.textContent = player2.getScore().toString();
-            }
-        } else {
-            //let rootNode = minimax.Node(gameBoard.board, [row, col]); 
-            //rootNode = minimax.buildGameTree(rootNode, player1, player2, true);
-            //let bestMove = minimax.findBestMove(rootNode, player1, player2);
-            //console.log(`bestMove: ${bestMove}`);
-            
-            //player2.play(bestMove[0], bestMove[1], gameBoard);
-            //player2ScoreElement.textContent = player2.getScore().toString();
-        }
-    });
-});
+player1.isHuman = true;
+player2.isHuman = false;
+console.log(player1.isHuman);
+console.log(player2.isHuman);
 
-// Setup player 1 controls
-const player1Symbol = $("#player1-symbol");
-player1Symbol.textContent = player1.getTeamSymbol();
-const player1SymbolInput = $("#sidebar input[name='player1-symbol']");
-const player1StatsSymbol = $("#player1-symbol");
-const player1SymbolBtn = $("#player1-container input[name='player1-symbol'] + button");
-player1SymbolBtn.addEventListener("click", (event) => {
-    if (player1SymbolInput.value == "") return;
-    player1.setTeamSymbol(player1SymbolInput.value);
-    player1Symbol.textContent = player1SymbolInput.value;
-    player1SymbolInput.value = "";
-});
-const player1NameInput = $("#sidebar input[name='player1-name']");
-const player1StatsName = $("#player1-name");
-const player1NameBtn = $("#player1-container input[name='player1-name'] + button");
-player1NameBtn.addEventListener("click", (event) => {
-    player1StatsName.textContent = player1NameInput.value;
-    player1NameInput.value = "";
-});
-
-// Setup player 2 controls
-const player2Symbol = $("#player2-symbol");
-player2Symbol.textContent = player2.getTeamSymbol();
-const player2SymbolInput = $("#sidebar input[name='player2-symbol']");
-const player2StatsSymbol = $("#player2-symbol");
-const player2SymbolBtn = $("#player2-container input[name='player2-symbol'] + button");
-player2SymbolBtn.addEventListener("click", (event) => {
-    if (player2SymbolInput.value == "") return;
-    player2.setTeamSymbol(player2SymbolInput.value);
-    player2Symbol.textContent = player2SymbolInput.value;
-    player2SymbolInput.value = "";
-});
-const player2NameInput = $("#sidebar input[name='player2-name']");
-const player2StatsName = $("#player2-name");
-const player2NameBtn = $("#player2-container input[name='player2-name'] + button");
-player2NameBtn.addEventListener("click", (event) => {
-    player2StatsName.textContent = player2NameInput.value;
-    player2NameInput.value = "";
-});
-
-// Other controls
-const newGameBtn = $("#new-game-button");
-newGameBtn.addEventListener("click", (event) => {
-    gameBoard.newGame();
-});
-const resetBtn = $("#reset-button");
-resetBtn.addEventListener("click", (event) => {
-    gameBoard.resetBoard();
-});
 
 export { checkForWinner, checkForTie };
