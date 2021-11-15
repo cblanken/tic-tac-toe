@@ -85,6 +85,7 @@ function checkForTie(board) {
 const Player = (name, teamSymbol, isHuman = true) => {
     let score = 0;
     const getName = () => name;
+    const setName = (x) => name = x;
     const getTeamSymbol = () => teamSymbol;
     const setTeamSymbol = (x) => teamSymbol = x;
     const getScore = () => score;
@@ -101,11 +102,14 @@ const Player = (name, teamSymbol, isHuman = true) => {
             gameBoard.setCell(x, y, teamSymbol)
             gameBoard.updateCellDisplay(x, y, teamSymbol);
             if (checkForWinner(gameBoard.board, teamSymbol)) {
-                console.log(`GAME OVER Player ${name} WINS!`);
                 incrementScore();
+                banner.textContent = `The winner is ${name}!`;
+                banner.hidden = false;
                 gameBoard.lock();
             } else if (checkForTie(gameBoard.board, teamSymbol)) {
-                console.log(`GAME OVER! IT WAS A TIE!`);
+                const banner = $("#banner");
+                banner.textContent = "It was a tie!";
+                banner.hidden = false;
                 gameBoard.lock();
             } else {
                 gameBoard.nextTurn();
@@ -115,7 +119,7 @@ const Player = (name, teamSymbol, isHuman = true) => {
         }
     };
 
-    return {getName, getTeamSymbol, setTeamSymbol, getScore, isHuman, incrementScore, play}
+    return {getName, setName, getTeamSymbol, setTeamSymbol, getScore, isHuman, incrementScore, play}
 };
 
 // Game State and Events
@@ -142,7 +146,7 @@ const player1StatsName = $("#player1-name");
 const player1NameBtn = $("#player1-container input[name='player1-name'] + button");
 player1NameBtn.addEventListener("click", (event) => {
     player1StatsName.textContent = player1NameInput.value;
-    if (player1NameInput.value = "human");
+    player1.setName(player1NameInput.value);
 });
 
 const player1InputType = $("#player1-container select[name='player-type']");
@@ -153,7 +157,6 @@ player1InputTypeBtn.addEventListener("click", (event) => {
     } else {
         player1.isHuman = false;
     }
-    console.log(player1.isHuman);
 });
 
 // Setup player 2 controls
@@ -173,7 +176,7 @@ const player2StatsName = $("#player2-name");
 const player2NameBtn = $("#player2-container input[name='player2-name'] + button");
 player2NameBtn.addEventListener("click", (event) => {
     player2StatsName.textContent = player2NameInput.value;
-    player2NameInput.value = "";
+    player2.setName(player2NameInput.value);
 });
 
 const player2InputType = $("#player2-container select");
@@ -205,7 +208,7 @@ const gameBoard = (() => {
     let playerTurn = true; // first player's turn
     const getTurn = () => { return playerTurn };
     let board = new Array(maxCol).fill().map(() => Array(maxRow).fill(""));
-    let isLocked = false;
+    let isLocked = true;
     let statusBarElement = $("#board-status-bar");
     let lockStatusElement = $("#board-lock-status");
     let readyStatusElement = $("#board-ready-status");
@@ -295,6 +298,7 @@ const gameBoard = (() => {
             });
         });
         lock();
+        $("#banner").hidden = true;
         playerTurn = true;
     };
 
@@ -334,12 +338,5 @@ const gameBoard = (() => {
 })();
 
 gameBoard.addBoardEvents(player1, player2);
-gameBoard.lock();
-
-player1.isHuman = true;
-player2.isHuman = false;
-console.log(player1.isHuman);
-console.log(player2.isHuman);
-
 
 export { checkForWinner, checkForTie };

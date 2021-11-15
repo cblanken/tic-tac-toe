@@ -147,3 +147,17 @@ button {
   padding: 1rem;
   border-radius: 3px;
 }
+
+#banner {
+  position: absolute;
+  top: 30px;
+  left: 60px;
+  right: 60px;
+  border-size: border-box;
+  border: 2px solid white;
+  font: bold 2rem cursive;
+  background-color: green;
+  padding: 0.5rem;
+  text-align: center;
+  margin: 1rem;
+}
