@@ -147,6 +147,7 @@ const player1NameBtn = $("#player1-container input[name='player1-name'] + button
 player1NameBtn.addEventListener("click", (event) => {
     player1StatsName.textContent = player1NameInput.value;
     player1.setName(player1NameInput.value);
+    player1NameInput.value = "";
 });
 
 const player1InputType = $("#player1-container select[name='player-type']");
@@ -177,6 +178,7 @@ const player2NameBtn = $("#player2-container input[name='player2-name'] + button
 player2NameBtn.addEventListener("click", (event) => {
     player2StatsName.textContent = player2NameInput.value;
     player2.setName(player2NameInput.value);
+    player2NameInput.value = "";
 });
 
 const player2InputType = $("#player2-container select");
