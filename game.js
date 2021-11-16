@@ -254,12 +254,27 @@ const gameBoard = (() => {
         }
     };
 
+    const disableControls = () => {
+        const submitButtons = $$(".player-input button");
+        submitButtons.forEach((button) => {
+            button.disabled = true;
+        });
+    }
+
+    const enableControls = () => {
+        const submitButtons = $$(".player-input button");
+        submitButtons.forEach((button) => {
+            button.disabled = false;
+        });
+    }
+
     const unlock = () => {
         if (isLocked) {
             statusBarElement.classList.toggle("status-ready");
             lockStatusElement.textContent = "🔓";
             readyStatusElement.textContent = "READY!";
         }
+        disableControls();
         isLocked = false;
     }
 
@@ -269,6 +284,7 @@ const gameBoard = (() => {
             lockStatusElement.textContent = "🔒";
             readyStatusElement.textContent ="LOCKED";
         }
+        enableControls();
         isLocked = true;     
     }
 
@@ -338,5 +354,6 @@ const gameBoard = (() => {
 })();
 
 gameBoard.addBoardEvents(player1, player2);
+gameBoard.lock();
 
 export { checkForWinner, checkForTie };
