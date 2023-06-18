@@ -1,13 +1,21 @@
 import { useState } from "react"
 
-interface Props {
+export type Tile = {
+  value: "X" | "O" | ""
+}
+
+interface IProps {
+  tile: Tile;
   boardSize: number;
 }
 
-export default function BoardTile(props: Props) {
+export default function BoardTile(props: IProps) {
+  const [tile, setTileData] = useState(props.tile)
+  const [boardSize, setBoardSize] = useState(props.boardSize)
+
   return (
-    <div className="text-white text-4xl text-center align-middle bg-slate-700 border-4 border-neutral-400 h-100">
-      X
+    <div className={`flex justify-center items-center border border-black text-4xl text-center align-middle`}>
+      <div className="">{tile.value}</div>
     </div>
   )
 }

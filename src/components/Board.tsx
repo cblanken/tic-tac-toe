@@ -1,15 +1,23 @@
+"use client"
 import { useState } from "react"
-import BoardTile from '../components/BoardTile'
+import BoardTile, { Tile } from '../components/BoardTile'
 
-type Props = {
+
+interface IProps {
   boardSize: number;
+  tiles: Tile[];
 }
 
-export default function Board(props: Props) {
-  let tiles = new Array<>;
+export default function Board(props: IProps) {
+  const [boardSize, setSize] = useState(props.boardSize)
+  const [tiles, setTiles] = useState(props.tiles)
+  const [playerTurn, setTurn] = useState(false)
+
   return (
-    <div>
-      <BoardTile boardSize={props.boardSize} />
+    <div className={`board grid grid-cols-${boardSize} m-12 aspect-square border border-black`}>
+      { tiles.map((tile, index) =>
+        <BoardTile tile={tile} boardSize={boardSize} key={index} />
+      )}
     </div>
   )
 }
