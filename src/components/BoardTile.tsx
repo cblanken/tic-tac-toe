@@ -7,6 +7,7 @@ export type Tile = {
 interface IProps {
   tile: Tile;
   boardSize: number;
+  className?: string;
 }
 
 export default function BoardTile(props: IProps) {
@@ -14,8 +15,8 @@ export default function BoardTile(props: IProps) {
   const [boardSize, setBoardSize] = useState(props.boardSize)
 
   return (
-    <div className={`flex justify-center items-center border border-black text-4xl text-center align-middle`}>
-      <div className="">{tile.value}</div>
-    </div>
+      <div className={`${props.className} flex justify-center items-center text-6xl p-6`}>
+        <div>{tile.value}</div>
+      </div>
   )
 }

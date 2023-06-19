@@ -7,6 +7,16 @@ module.exports = {
   ],
   theme: {
     extend: {
+      spacing: {
+        '25%': '25%',
+        '50%': '50%',
+        '75%': '75%',
+      },
+      maxHeight: {
+        '25': '25%',
+        '50': '50%',
+        '75': '75%',
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':

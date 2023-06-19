@@ -7,7 +7,7 @@ export default function Home() {
 
   let tiles: Array<Tile> = new Array(boardSize ** 2).fill( {value: "X" } )
   return (
-    <main className="flex h-screen flex-col">
+    <main className="h-screen flex flex-col justify-center items-center">
       <Board boardSize={boardSize} tiles={tiles} />
     </main>
   )
