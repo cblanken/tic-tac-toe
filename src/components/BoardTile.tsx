@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 export type Tile = {
-  value: "X" | "O" | ""
+  value: "X" | "O" | " "
 }
 
 interface IProps {
@@ -15,7 +15,7 @@ export default function BoardTile(props: IProps) {
   const [boardSize, setBoardSize] = useState(props.boardSize)
 
   return (
-      <div className={`${props.className} flex justify-center items-center text-6xl p-6`}>
+      <div className={`${props.className} flex justify-center items-center text-7xl p-6`}>
         <div>{tile.value}</div>
       </div>
   )

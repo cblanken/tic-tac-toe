@@ -14,9 +14,11 @@ export default function Board(props: IProps) {
   const [playerTurn, setTurn] = useState(false)
 
   return (
-    <div className={` board aspect-square border border-black grid grid-cols-3`}>
+    <div className={`bg-white p-14 rounded-2xl gap-6 board aspect-square grid grid-cols-${boardSize}`}>
       { tiles.map((tile, index) =>
-        <BoardTile className="border border-black" tile={tile} boardSize={boardSize} key={index} />
+        <BoardTile 
+          className="h-32 font-extrabold text-white overflow-hidden aspect-square bg-indigo-300 drop-shadow-lg rounded-xl"
+          tile={tile} boardSize={boardSize} key={index} />
       )}
     </div>
   )
