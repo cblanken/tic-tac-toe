@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Board from '../components/Board'
-import { Tile } from '../components/BoardTile'
+import { Tile } from '../lib'
 
 export default function Home() {
   const boardSize = 3

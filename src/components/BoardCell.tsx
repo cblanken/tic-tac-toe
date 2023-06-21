@@ -1,17 +1,14 @@
 import { useState } from "react"
-
-export type Tile = {
-  value: "X" | "O" | " "
-}
+import type { PlayerSymbol } from "../lib"
 
 interface IProps {
-  tile: Tile;
+  tile: PlayerSymbol;
   boardSize: number;
   className?: string;
 }
 
-export default function BoardTile(props: IProps) {
-  const [tile, setTileData] = useState(props.tile)
+export default function BoardCell(props: IProps) {
+  const [tile, setCellData] = useState(props.tile)
   const [boardSize, setBoardSize] = useState(props.boardSize)
 
   return (
