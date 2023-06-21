@@ -2,17 +2,19 @@ export interface PlayerSymbol {
   value: "X" | "O" | ""
 }
 
+export type BoardState = Array<PlayerSymbol>;
+
 export class Board {
-  cells: Array<PlayerSymbol>;
+  cells: BoardState;
   size: number;
 
-  constructor(cells: Array<PlayerSymbol>, size: number) {
+  constructor(cells: BoardState, size: number) {
     this.cells = cells;
     this.size = size;
   }
 }
 
-type PlayStrategy = (board: Board, player: Player) => Board
+type PlayStrategy = (boardState: BoardState, player: Player) => BoardState
 
 export class IPlayer {
   name: string;
@@ -29,20 +31,21 @@ export class IPlayer {
 export class Player extends IPlayer {}
 
 export abstract class AiStrategy {
-  public static random: PlayStrategy = (board: Board, player: Player): Board => {
-    let available_cells = board.cells.filter((x) => x.value === "")
+  public static random: PlayStrategy = (boardState: BoardState, player: Player): BoardState => {
+    let available_cells = boardState.filter((x) => x.value === "")
 
     // Return original board state if the board is already full
-    if (available_cells.length === 0) { return board }
+    if (available_cells.length === 0) { return boardState }
 
     // Update one of the available cells at random with the player's symbol
     let max = available_cells.length - 1;
     available_cells[Math.floor(Math.random() * max)].value = player.symbol.value
 
-    return board
+    console.table(boardState)
+    return boardState
   }
 
-  public static minimax: PlayStrategy = (board: Board): Board => { return board }
+  public static minimax: PlayStrategy = (boardState: BoardState): BoardState => { return boardState }
 }
 
 export class AI extends IPlayer {

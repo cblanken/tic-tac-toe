@@ -8,7 +8,7 @@ export default function Home() {
   let board = new GameBoard(cells, boardSize)
   return (
     <main className="h-screen flex flex-col justify-center items-center">
-      <Board gameBoard={board} />
+      <Board boardState={board.cells} boardSize={boardSize} />
     </main>
   )
 }
