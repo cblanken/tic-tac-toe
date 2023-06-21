@@ -6,11 +6,13 @@ export class Board {
   cells: Array<PlayerSymbol>;
   size: number;
 
-  constructor(cells: Array<PlayerSymbol>, size: number = 3) {
+  constructor(cells: Array<PlayerSymbol>, size: number) {
     this.cells = cells;
     this.size = size;
   }
 }
+
+type PlayStrategy = (board: Board, player: Player) => Board
 
 export class IPlayer {
   name: string;
@@ -26,17 +28,32 @@ export class IPlayer {
 
 export class Player extends IPlayer {}
 
-export class AI extends IPlayer {
-  get_next_play_random(board: Board): Board {
-    // TODO: implement random selection
+export abstract class AiStrategy {
+  public static random: PlayStrategy = (board: Board, player: Player): Board => {
+    let available_cells = board.cells.filter((x) => x.value === "")
+
+    // Return original board state if the board is already full
+    if (available_cells.length === 0) { return board }
+
+    // Update one of the available cells at random with the player's symbol
+    let max = available_cells.length - 1;
+    available_cells[Math.floor(Math.random() * max)].value = player.symbol.value
+
     return board
   }
 
-  get_next_play_minimax(board: Board): Board {
-    // TODO: implement minimax algo
-    return board
+  public static minimax: PlayStrategy = (board: Board): Board => { return board }
+}
+
+export class AI extends IPlayer {
+  strategy: PlayStrategy;
+
+  constructor(name: string, score: number, symbol: PlayerSymbol, strategy: PlayStrategy = AiStrategy.random) {
+    super(name, score, symbol);
+    this.strategy = strategy;
   }
 }
+
 
 export class TicTacToe {
   board: Board;
