@@ -5,12 +5,22 @@ export interface PlayerSymbol {
 export type BoardState = Array<PlayerSymbol>;
 
 export class Board {
-  cells: BoardState;
+  boardState: BoardState;
   size: number;
 
-  constructor(cells: BoardState, size: number) {
-    this.cells = cells;
+  constructor(boardState: BoardState, size: number) {
+    this.boardState = boardState;
     this.size = size;
+  }
+
+  updateStateByIndex(index: number, symbol: PlayerSymbol) {
+    if (index > 0 && index < this.boardState.length) {
+      this.boardState[index] = symbol
+    }
+  }
+
+  updateState(boardState: BoardState) {
+    this.boardState = boardState;
   }
 }
 
@@ -63,12 +73,18 @@ export class TicTacToe {
   turn: boolean;
   player1: IPlayer;
   player2: IPlayer;
+  currentPlayer: IPlayer;
 
   constructor(board: Board, player1: IPlayer, player2: IPlayer, turn: boolean = true) {
     this.board = board;
     this.turn = turn;
     this.player1 = player1;
     this.player2 = player2;
+    this.currentPlayer  = this.player1;
+  }
+
+  nextTurn() {
+    this.currentPlayer = this.currentPlayer === this.player1 ? this.player2 : this.player1
   }
 }
 
