@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect } from "react"
 import Board from "./Board"
+import toast from "react-hot-toast";
 import {
   AI,
   AiStrategy,
@@ -58,6 +59,8 @@ export default function Game(props: IProps) {
         return i === index ? game.currentPlayer.symbol : x
       })
       setBoardState(newBoardState);
+    } else {
+      toast.error("Please select an empty cell")
     }
   }
 
