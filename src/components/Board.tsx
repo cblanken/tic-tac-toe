@@ -11,16 +11,16 @@ interface IProps {
   handleTurn: Function;
 }
 
-export default function Board(props: IProps) {
-  const [boardState, setBoardState] = useState(props.boardState)
 
+export default function Board(props: IProps) {
   return (
     <>
       <div className={`bg-white p-4 rounded-2xl gap-6 board aspect-square grid grid-cols-3`}>
-        { boardState.map((cell, index) =>
+        { props.boardState.map((cell, index) =>
           <BoardCell 
+            key={index} index={index}
             className="h-32 font-extrabold text-white overflow-hidden aspect-square bg-indigo-400 drop-shadow-lg rounded-xl"
-            cell={cell} boardSize={props.boardSize} onClick={props.handleTurn} key={index} />
+            cell={cell} boardSize={props.boardSize} onClick={props.handleTurn} />
         )}
       </div>
       <br/>

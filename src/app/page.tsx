@@ -5,12 +5,12 @@ import { PlayerSymbol, Board as GameBoard } from '../lib'
 
 export default function Home() {
   const boardSize = 3
-  let cells: Array<PlayerSymbol> = new Array(boardSize ** 2).fill(0).map( (): PlayerSymbol => ({value: ""}) )
-  let board = new GameBoard(cells, boardSize)
+  let boardState: Array<PlayerSymbol> = new Array(boardSize ** 2).fill({value: ""})
+  boardState[1] = {value: "X"}
   return (
     <main className="bg-white h-screen flex flex-col justify-center items-center">
       <Game
-        boardState={board.boardState}
+        boardState={boardState}
         player1Name={'Player 1'}
         player2Name={'Player 2'}
         player1Symbol={{value: "X"}}

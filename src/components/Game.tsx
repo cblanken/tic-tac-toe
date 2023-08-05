@@ -26,7 +26,7 @@ export default function Game(props: IProps) {
   const [player2Name, setPlayer2Name] = useState(props.player2Name)
   const [player2Symbol, setPlayer2Symbol] = useState(props.player2Symbol)
 
-  const boardSize = 3
+
   let player1: Player, player2: Player;
   if (player1Name === undefined ||
       player2Name === undefined ||
@@ -40,20 +40,24 @@ export default function Game(props: IProps) {
     player2 = new Player(player2Name, 0, player2Symbol)
   }
 
-  let gameBoard = new GameBoard(boardState, boardSize)
-  let ttt = new TicTacToe(gameBoard, player1, player2)
+  const boardSize = 3
+  const gameBoard = new GameBoard(boardState, boardSize)
+  const [game, setGame] = useState(
+    new TicTacToe(gameBoard, player1, player2)
+  )
 
-  let cells: Array<PlayerSymbol> = new Array(boardSize ** 2).fill(0).map( (): PlayerSymbol => ({value: ""}) )
-  cells[0] = {value: 'X'}
-  let board = new GameBoard(cells, boardSize)
 
-
-  async function handlePlayerClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+  function handlePlayerClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault()
     let value = e.currentTarget.getAttribute("data-value")
-    console.log(value, typeof(value))
     if (value === "") {
-      e.currentTarget.setAttribute("data-value", ttt.currentPlayer.symbol.value)
+      e.currentTarget.setAttribute("data-value", game.currentPlayer.symbol.value)
+      game.nextTurn();
+      const index = parseInt(e.currentTarget.getAttribute("data-index") || "");
+      let newBoardState = boardState.map((x, i) => {
+        return i === index ? game.currentPlayer.symbol : x
+      })
+      setBoardState(newBoardState);
     }
   }
 
@@ -64,7 +68,7 @@ export default function Game(props: IProps) {
         <div>{player1.name}</div>
         <div>{player2.name}</div>
       </h2>
-      <Board boardState={board.boardState} boardSize={boardSize} handleTurn={handlePlayerClick} />
+      <Board boardState={boardState} boardSize={boardSize} handleTurn={handlePlayerClick} />
     </section>
   )
 }
