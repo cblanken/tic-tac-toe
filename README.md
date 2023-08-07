@@ -1,34 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+![header](https://github.com/cblanken/tic-tac-toe/assets/19908880/a8324a13-4ad3-4f7b-975f-195b2f1dba0c)
 
-## Getting Started
+# tac-o-rithms
+A simple tic-tac-toe app to visualize the Minimax algorithm
 
-First, run the development server:
+## Demo
+Check out the live site [here](https://tic-tac-toe-cblanken.vercel.app)
 
+## Tech 
+Next.js, TypeScript, TailwindCSS
+
+## Screenshots
+![screenshot](https://github.com/cblanken/tic-tac-toe/assets/19908880/58752307-259f-4e1b-a67e-b9a1fc655552)
+
+
+## Run Locally
+Clone the project
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+git clone https://link-to-project
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Go to the project directory
+```bash
+cd my-project
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Install dependencies
+```bash
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Start the application
+Run the development build
+```bash
+npm run dev
+```
 
-## Learn More
+Run a production build
+```bash
+npm run build
+npm run start
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Acknowledgements
+- [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
+- [Awesome README](https://github.com/matiassingers/awesome-readme)
+- [How to write a Good readme](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
