@@ -1,16 +1,15 @@
 export interface PlayerSymbol {
-  value: "X" | "O" | ""
+  // value: "X" | "O" | ""
+  value: string
 }
 
 export type BoardState = Array<PlayerSymbol>;
 
 export class Board {
   boardState: BoardState;
-  size: number;
 
-  constructor(boardState: BoardState, size: number) {
+  constructor(boardState: BoardState) {
     this.boardState = boardState;
-    this.size = size;
   }
 
   updateStateByIndex(index: number, symbol: PlayerSymbol) {
@@ -48,7 +47,7 @@ export abstract class AiStrategy {
     if (available_cells.length === 0) { return boardState }
 
     // Update one of the available cells at random with the player's symbol
-    let max = available_cells.length - 1;
+    let max = available_cells.length;
     available_cells[Math.floor(Math.random() * max)].value = player.symbol.value
 
     console.table(boardState)
@@ -73,18 +72,18 @@ export class TicTacToe {
   turn: boolean;
   player1: IPlayer;
   player2: IPlayer;
+  ai: AI;
   currentPlayer: IPlayer;
+  winner: IPlayer | null;
 
-  constructor(board: Board, player1: IPlayer, player2: IPlayer, turn: boolean = true) {
+  constructor(board: Board, player1: IPlayer, player2: IPlayer, ai: AI, turn: boolean = true) {
     this.board = board;
     this.turn = turn;
     this.player1 = player1;
     this.player2 = player2;
-    this.currentPlayer  = this.player1;
-  }
-
-  nextTurn() {
-    this.currentPlayer = this.currentPlayer === this.player1 ? this.player2 : this.player1
+    this.ai = ai;
+    this.currentPlayer = this.player1;
+    this.winner = null;
   }
 }
 

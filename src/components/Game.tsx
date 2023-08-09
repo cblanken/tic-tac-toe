@@ -10,7 +10,7 @@ import {
   Player,
   PlayerSymbol,
   TicTacToe,
-} from "../lib"
+} from "@/lib"
 
 interface IProps {
   boardState: BoardState;
@@ -28,48 +28,59 @@ export default function Game(props: IProps) {
   const [player2Symbol, setPlayer2Symbol] = useState(props.player2Symbol)
 
 
-  let player1: Player, player2: Player;
+  let player: Player, ai: AI;
   if (player1Name === undefined ||
       player2Name === undefined ||
       player1Symbol === undefined ||
       player2Symbol === undefined) {
     console.log("Missing player names or symbols. Creating default game...")
-    player1 = new Player("Dave", 0, {value: "X"});
-    player2 = new AI("Hal", 0, {value: "O"}, AiStrategy.random);
+    player = new Player("Dave", 0, {value: "X"});
+    ai = new AI("Hal", 0, {value: "O"}, AiStrategy.random);
   } else {
-    player1 = new Player(player1Name, 0, player1Symbol)
-    player2 = new Player(player2Name, 0, player2Symbol)
+    player = new Player(player1Name, 0, player1Symbol)
+    ai = new AI(player2Name, 0, player2Symbol)
   }
 
   const boardSize = 3
-  const gameBoard = new GameBoard(boardState, boardSize)
+  const gameBoard = new GameBoard(boardState)
   const [game, setGame] = useState(
-    new TicTacToe(gameBoard, player1, player2)
+    new TicTacToe(gameBoard, player, ai, ai)
   )
 
 
   function handlePlayerClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault()
     let value = e.currentTarget.getAttribute("data-value")
-    if (value === "") {
-      e.currentTarget.setAttribute("data-value", game.currentPlayer.symbol.value)
-      game.nextTurn();
-      const index = parseInt(e.currentTarget.getAttribute("data-index") || "");
-      let newBoardState = boardState.map((x, i) => {
-        return i === index ? game.currentPlayer.symbol : x
-      })
-      setBoardState(newBoardState);
-    } else {
+    if (value !== "") {
       toast.error("Please select an empty cell")
+      return false;
     }
+
+    const index = parseInt(e.currentTarget.getAttribute("data-index") || "");
+
+    // Human player's turn
+    let newBoardState = boardState.map((x, i) => {
+      return i === index ? game.currentPlayer.symbol : x
+    })
+    setBoardState(newBoardState);
+
+    // AI player's turn
+    fetch(`/api/ai?board=${newBoardState.map(x => x.value).join(",")}`)
+      .then(res => res.json())
+      .then(newBoardState => {
+        console.log(newBoardState)
+        setBoardState(newBoardState.boardState);
+      })
+
+    console.log("NEW BOARD", boardState);
   }
 
   return (
     <section className="flex flex-col gap-4 text-center text-black">
       <h1 className="font-bold text-4xl">Tic-Tac-Toe</h1>
       <h2 className="flex justify-between">
-        <div>{player1.name}</div>
-        <div>{player2.name}</div>
+        <div>{player.name}</div>
+        <div>{ai.name}</div>
       </h2>
       <Board boardState={boardState} boardSize={boardSize} handleTurn={handlePlayerClick} />
     </section>
