@@ -59,13 +59,12 @@ export default function Game(props: IProps) {
     const index = parseInt(e.currentTarget.getAttribute("data-index") || "");
 
     // Human player's turn
-    let newBoardState = boardState.map((x, i) => {
-      return i === index ? game.currentPlayer.symbol : x
+    let newBoardState = boardState.map((cell, i) => {
+      return i === index ? game.currentPlayer.symbol : cell
     })
-    setBoardState(newBoardState);
 
     // AI player's turn
-    fetch(`/api/ai?board=${newBoardState.map(x => x.value).join(",")}`)
+    fetch(`/api/ai?board=${newBoardState.flat().map(x => x.value).join(",")}`)
       .then(res => res.json())
       .then(newBoardState => {
         console.log(newBoardState)

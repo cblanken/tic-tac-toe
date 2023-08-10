@@ -1,9 +1,11 @@
+import * as minimax from "@/minimax_ai";
+
 export interface PlayerSymbol {
   // value: "X" | "O" | ""
   value: string
 }
 
-export type BoardState = Array<PlayerSymbol>;
+export type BoardState = Array<Array<PlayerSymbol>>;
 
 export class Board {
   boardState: BoardState;
@@ -12,9 +14,11 @@ export class Board {
     this.boardState = boardState;
   }
 
-  updateStateByIndex(index: number, symbol: PlayerSymbol) {
-    if (index > 0 && index < this.boardState.length) {
-      this.boardState[index] = symbol
+  updateStateByIndex(row: number, col: number, symbol: PlayerSymbol) {
+    try {
+      this.boardState[row][col] = symbol
+    } catch (err) {
+      console.log(err)
     }
   }
 
@@ -41,20 +45,23 @@ export class Player extends IPlayer {}
 
 export abstract class AiStrategy {
   public static random: PlayStrategy = (boardState: BoardState, player: Player): BoardState => {
-    let available_cells = boardState.filter((x) => x.value === "")
+    // let available_cells = boardState.filter((row => row.findIndex(cell => cell.value === "") !== -1))
+    let available_cells = boardState.flat().filter((cell => cell.value === ""))
 
     // Return original board state if the board is already full
     if (available_cells.length === 0) { return boardState }
 
     // Update one of the available cells at random with the player's symbol
     let max = available_cells.length;
-    available_cells[Math.floor(Math.random() * max)].value = player.symbol.value
+    available_cells[Math.floor(Math.random() * available_cells.length)].value = player.symbol.value
 
     console.table(boardState)
     return boardState
   }
 
-  public static minimax: PlayStrategy = (boardState: BoardState): BoardState => { return boardState }
+  public static minimax: PlayStrategy = (boardState: BoardState, player: Player): BoardState => { 
+    return boardState
+  }
 }
 
 export class AI extends IPlayer {
