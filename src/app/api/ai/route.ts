@@ -9,22 +9,16 @@ import {
   TicTacToe,
 } from "@/lib"
 
-export function GET(req: Request) {
-    const url = new URL(req.url).search
-    const params = new URLSearchParams(url)
-    
-    console.log(params)
+export async function POST(req: Request) {
+    const data = await req.json();
 
-    const board_csv = params.get("board");
-    if (!board_csv) {
+    if (!data.board) {
         return NextResponse.json({ error: "No board state provided" });
     }
 
-    let boardState: Array<PlayerSymbol> = Array.from(board_csv.split(',')).map(x => ({ value: x }) );
-
-    let board: Board = new Board(boardState);
-    let human_player = new Player("Human", parseInt(params.get("player_score") || ""), { value: "X"});
-    let ai_player = new AI("AI", parseInt(params.get("player_score") || ""), { value: "O"});
+    let board: Board = new Board(JSON.parse(data.board));
+    let human_player = new Player("Human", parseInt(data?.player1_score || ""), { value: "X"});
+    let ai_player = new AI("AI", parseInt(data?.player2_score || ""), { value: "O"});
     let ttt: TicTacToe = new TicTacToe(board, human_player, ai_player, ai_player)
 
     ttt.ai.strategy(ttt.board.boardState, ai_player);

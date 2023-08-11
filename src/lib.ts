@@ -1,7 +1,4 @@
-import * as minimax from "@/minimax_ai";
-
 export interface PlayerSymbol {
-  // value: "X" | "O" | ""
   value: string
 }
 
@@ -41,11 +38,90 @@ export class IPlayer {
   }
 }
 
+export function checkForWinner(boardState: BoardState, playerSymbol: PlayerSymbol) {
+  let isWinner = false;
+  // Check rows
+  console.log("WINNER CHECK", boardState)
+  boardState.forEach((row, index) => {
+    // Skip row if winning state already found or
+    // any row starting with an empty cell
+    let firstCell = row[0]?.value;
+
+    if (firstCell !== playerSymbol.value && playerSymbol.value !== undefined) return;
+
+    // Winner if every cell in pattern matches
+    isWinner = row.every(cell => cell.value === firstCell);
+  });
+  
+  // Check columns
+  for (let col = 0; col < boardState[0].length; col++) {
+    // Skip column if it starts with an empty cell
+    const firstCell = boardState[0][col].value;
+    if (firstCell !== playerSymbol.value && playerSymbol.value !== undefined) continue;
+    
+    for (let row = 1; row < boardState.length; row++) {
+      const cell = boardState[row][col];     
+      if (cell.value !== firstCell) {
+          break; // move on to next column
+      } else if (row === boardState.length - 1) {
+          isWinner = true;
+      }
+    }
+  }
+
+  // Check diagonals
+  if (boardState.length === boardState[0].length) {
+    const topLeft = boardState[0][0].value;
+    const topRight = boardState[0][boardState.length - 1].value;
+    // Top-left to bottom-right diagonal
+    for (let row = 0; row < boardState.length; row++) {
+      let col = row;
+      // Skip column if it starts with an empty cell
+      if (topLeft !== playerSymbol.value && playerSymbol.value !== undefined) break;
+
+      if (boardState[row][col].value !== topLeft) {
+          break; // move on to next diagonal
+      } else if (row === boardState.length - 1) {
+          isWinner = true;
+      }
+    }
+      
+    // Top-right to bottom-left diagonal
+    for (let row = 0; row < boardState.length; row++) {
+      let col = boardState.length - row - 1;
+      // Skip column if it starts with an empty cell
+      if (topRight !== playerSymbol.value && playerSymbol.value !== undefined) break;
+
+      if (boardState[row][col].value !== topRight) {
+          break;
+      } else if (row === boardState.length - 1) {
+          isWinner = true;
+      }
+    }
+  } else {
+    console.log("Board is not square. No diagonals to check.");
+  }
+
+  if (isWinner) {
+    return true;
+  } else {
+    return false; // No winner yet
+  }
+};
+
+export function checkForTie(boardState: BoardState) {
+  let emptyCells = boardState.flat().filter(cell => cell.value === "");
+
+  return (emptyCells.length === 0
+    && checkForWinner(boardState, { value: "X" }) === false
+    && checkForWinner(boardState, { value: "O" }) === false)
+}
+
+
 export class Player extends IPlayer {}
 
 export abstract class AiStrategy {
   public static random: PlayStrategy = (boardState: BoardState, player: Player): BoardState => {
-    // let available_cells = boardState.filter((row => row.findIndex(cell => cell.value === "") !== -1))
     let available_cells = boardState.flat().filter((cell => cell.value === ""))
 
     // Return original board state if the board is already full

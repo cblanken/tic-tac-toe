@@ -10,6 +10,8 @@ import {
   Player,
   PlayerSymbol,
   TicTacToe,
+  checkForTie,
+  checkForWinner,
 } from "@/lib"
 
 interface IProps {
@@ -34,6 +36,7 @@ export default function Game(props: IProps) {
       player1Symbol === undefined ||
       player2Symbol === undefined) {
     console.log("Missing player names or symbols. Creating default game...")
+    toast("Missing player names or symbols. Creating default game...")
     player = new Player("Dave", 0, {value: "X"});
     ai = new AI("Hal", 0, {value: "O"}, AiStrategy.random);
   } else {
@@ -56,22 +59,42 @@ export default function Game(props: IProps) {
       return false;
     }
 
-    const index = parseInt(e.currentTarget.getAttribute("data-index") || "");
+    const row = parseInt(e.currentTarget.getAttribute("data-row") || "");
+    const col = parseInt(e.currentTarget.getAttribute("data-col") || "");
 
     // Human player's turn
-    let newBoardState = boardState.map((cell, i) => {
-      return i === index ? game.currentPlayer.symbol : cell
+    let newBoardState = boardState.map((board_row, r) => {
+      return board_row.map((board_cell, c) => {
+        return r === row && c === col ? game.currentPlayer.symbol : board_cell
+      })
     })
 
     // AI player's turn
-    fetch(`/api/ai?board=${newBoardState.flat().map(x => x.value).join(",")}`)
-      .then(res => res.json())
+    fetch(`/api/ai`, {
+      method: "POST",
+      body: JSON.stringify({
+        player1_score: player.score,
+        player2_score: ai.score,
+        board: JSON.stringify(newBoardState),
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      },
+    }).then(res => res.json())
       .then(newBoardState => {
-        console.log(newBoardState)
+        console.log("NEW BOARD STATE", newBoardState)
         setBoardState(newBoardState.boardState);
       })
 
-    console.log("NEW BOARD", boardState);
+    let isWinner = checkForWinner(newBoardState, {value: "X"}) || checkForWinner(boardState, {value: "O"})
+    let isTie = checkForTie(newBoardState)
+    if (isTie) {
+      toast.error("It's a tie!");
+    } else if (isWinner) {
+      toast("Winner winner chicken dinner! 🍗")
+    } else {
+      toast.error("No winner yet! Play on!");
+    }
   }
 
   return (

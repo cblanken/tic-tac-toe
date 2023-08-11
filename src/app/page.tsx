@@ -5,7 +5,9 @@ import { Toaster } from "react-hot-toast";
 
 export default function Home() {
   const boardSize = 3
-  let boardState: Array<PlayerSymbol> = new Array(boardSize ** 2).fill({value: ""})
+  let boardState: Array<Array<PlayerSymbol>> = new Array(boardSize)
+    .fill(Array(boardSize)
+    .fill({value: ""}))
   return (
     <main className="bg-white h-screen flex flex-col justify-center items-center">
       <Toaster 
