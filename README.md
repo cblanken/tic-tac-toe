@@ -44,6 +44,7 @@ npm run start
 ## Acknowledgements
 - [readme.so](https://readme.so)
 - [Namecheap Logo Maker](https://www.namecheap.com/logo-maker/)
+- [favicon.io](https://favicon.io)
 
 
 ## License
