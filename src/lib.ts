@@ -41,7 +41,6 @@ export class IPlayer {
 export function checkForWinner(boardState: BoardState, playerSymbol: PlayerSymbol) {
   let isWinner = false;
   // Check rows
-  console.log("WINNER CHECK", boardState)
   boardState.forEach((row, index) => {
     // Skip row if winning state already found or
     // any row starting with an empty cell

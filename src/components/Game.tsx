@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Board from "./Board"
 import toast from "react-hot-toast";
 import {
@@ -23,6 +23,7 @@ interface IProps {
 }
 
 export default function Game(props: IProps) {
+  const [gameoverState, setGameoverState] = useState("");
   const [boardState, setBoardState] = useState(props.boardState)
   const [player1Name, setPlayer1Name] = useState(props.player1Name)
   const [player1Symbol, setPlayer1Symbol] = useState(props.player1Symbol)
@@ -35,7 +36,6 @@ export default function Game(props: IProps) {
       player2Name === undefined ||
       player1Symbol === undefined ||
       player2Symbol === undefined) {
-    console.log("Missing player names or symbols. Creating default game...")
     toast("Missing player names or symbols. Creating default game...")
     player = new Player("Dave", 0, {value: "X"});
     ai = new AI("Hal", 0, {value: "O"}, AiStrategy.random);
@@ -50,8 +50,23 @@ export default function Game(props: IProps) {
     new TicTacToe(gameBoard, player, ai, ai)
   )
 
+  function checkGameoverState(boardState: BoardState,) {
+    let isWinner = checkForWinner(boardState, {value: "X"}) || checkForWinner(boardState, {value: "O"})
+    let isTie = checkForTie(boardState)
+    if (isTie) {
+      return "tie"
+    } else if (isWinner) {
+      return "win";
+    } else {
+      return "pending";
+    }
+  }
 
-  function handlePlayerClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+  async function handlePlayerClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    if (gameoverState) {
+      return false;
+    }
+
     e.preventDefault()
     let value = e.currentTarget.getAttribute("data-value")
     if (value !== "") {
@@ -69,8 +84,23 @@ export default function Game(props: IProps) {
       })
     })
 
+    setBoardState(newBoardState);
+    let gameoverMessage = checkGameoverState(newBoardState)
+    if (gameoverMessage !== "pending") {
+      switch (gameoverMessage) {
+        case "tie":
+          toast.error("It's a tie!");
+          setGameoverState("tie")
+          return true;
+        case "win":
+          toast("Winner winner chicken dinner! 🍗")
+          setGameoverState("win")
+          return true;
+      }
+    }
+
     // AI player's turn
-    fetch(`/api/ai`, {
+    let aiBoardState = await fetch(`/api/ai`, {
       method: "POST",
       body: JSON.stringify({
         player1_score: player.score,
@@ -81,17 +111,21 @@ export default function Game(props: IProps) {
         "Content-Type": "application/json"
       },
     }).then(res => res.json())
-      .then(newBoardState => {
-        console.log("NEW BOARD STATE", newBoardState)
-        setBoardState(newBoardState.boardState);
-      })
 
-    let isWinner = checkForWinner(newBoardState, {value: "X"}) || checkForWinner(boardState, {value: "O"})
-    let isTie = checkForTie(newBoardState)
-    if (isTie) {
-      toast.error("It's a tie!");
-    } else if (isWinner) {
-      toast("Winner winner chicken dinner! 🍗")
+    setBoardState(aiBoardState.boardState);
+
+    gameoverMessage = checkGameoverState(aiBoardState.boardState)
+    if (gameoverMessage !== "pending") {
+      switch (gameoverMessage) {
+        case "tie":
+          toast.error("It's a tie!");
+          setGameoverState("tie")
+          return true;
+        case "win":
+          toast("Winner winner chicken dinner! 🍗")
+          setGameoverState("win")
+          return true;
+      }
     } else {
       toast.error("No winner yet! Play on!");
     }
