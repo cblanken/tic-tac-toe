@@ -38,7 +38,7 @@ export default function Game(props: IProps) {
       player2Symbol === undefined) {
     toast("Missing player names or symbols. Creating default game...")
     player = new Player("Dave", 0, {value: "X"});
-    ai = new AI("Hal", 0, {value: "O"}, AiStrategy.random);
+    ai = new AI("Hal", 0, {value: "O"}, AiStrategy.MINIMAX);
   } else {
     player = new Player(player1Name, 0, player1Symbol)
     ai = new AI(player2Name, 0, player2Symbol)

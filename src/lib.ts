@@ -1,3 +1,5 @@
+import * as minimax from "@/minimax";
+
 export interface PlayerSymbol {
   value: string
 }
@@ -24,7 +26,7 @@ export class Board {
   }
 }
 
-type PlayStrategy = (boardState: BoardState, player: Player) => BoardState
+type PlayStrategy = (boardState: BoardState, player: Player, enemy: Player) => BoardState
 
 export class IPlayer {
   name: string;
@@ -120,7 +122,7 @@ export function checkForTie(boardState: BoardState) {
 export class Player extends IPlayer {}
 
 export abstract class AiStrategy {
-  public static random: PlayStrategy = (boardState: BoardState, player: Player): BoardState => {
+  public static RANDOM: PlayStrategy = (boardState: BoardState, player: Player): BoardState => {
     let available_cells = boardState.flat().filter((cell => cell.value === ""))
 
     // Return original board state if the board is already full
@@ -128,21 +130,30 @@ export abstract class AiStrategy {
 
     // Update one of the available cells at random with the player's symbol
     let max = available_cells.length;
-    available_cells[Math.floor(Math.random() * available_cells.length)].value = player.symbol.value
+    available_cells[Math.floor(Math.random() * max)].value = player.symbol.value
 
-    console.table(boardState)
     return boardState
   }
 
-  public static minimax: PlayStrategy = (boardState: BoardState, player: Player): BoardState => { 
-    return boardState
+  public static MINIMAX: PlayStrategy = (boardState: BoardState, player: Player, enemy: Player): BoardState => { 
+    let board = new Board(boardState)
+    let rootNode = new minimax.Node(board, []); 
+    rootNode = minimax.buildGameTree(rootNode, enemy, player, true);
+    let bestMove = minimax.findBestMove(rootNode, enemy, player);
+    console.log("bestMove", bestMove)
+    if (bestMove) {
+      board.updateStateByIndex(bestMove[0], bestMove[1], player.symbol)
+    } else {
+      console.log("Minimax algorithm failed to find a move")
+    }
+    return board.boardState
   }
 }
 
 export class AI extends IPlayer {
   strategy: PlayStrategy;
 
-  constructor(name: string, score: number, symbol: PlayerSymbol, strategy: PlayStrategy = AiStrategy.random) {
+  constructor(name: string, score: number, symbol: PlayerSymbol, strategy: PlayStrategy = AiStrategy.RANDOM) {
     super(name, score, symbol);
     this.strategy = strategy;
   }
