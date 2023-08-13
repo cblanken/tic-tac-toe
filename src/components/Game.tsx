@@ -47,7 +47,7 @@ export default function Game(props: IProps) {
   const boardSize = 3
   const gameBoard = new GameBoard(boardState)
   const [game, setGame] = useState(
-    new TicTacToe(gameBoard, player, ai, ai)
+    new TicTacToe(gameBoard, player, ai)
   )
 
   function checkGameoverState(boardState: BoardState,) {

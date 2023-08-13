@@ -137,10 +137,9 @@ export abstract class AiStrategy {
 
   public static MINIMAX: PlayStrategy = (boardState: BoardState, player: Player, enemy: Player): BoardState => { 
     let board = new Board(boardState)
-    let rootNode = new minimax.Node(board, []); 
+    let rootNode = new minimax.Node(board.boardState, []); 
     rootNode = minimax.buildGameTree(rootNode, enemy, player, true);
     let bestMove = minimax.findBestMove(rootNode, enemy, player);
-    console.log("bestMove", bestMove)
     if (bestMove) {
       board.updateStateByIndex(bestMove[0], bestMove[1], player.symbol)
     } else {
@@ -163,19 +162,17 @@ export class AI extends IPlayer {
 export class TicTacToe {
   board: Board;
   turn: boolean;
-  player1: IPlayer;
-  player2: IPlayer;
+  player: IPlayer;
   ai: AI;
   currentPlayer: IPlayer;
   winner: IPlayer | null;
 
-  constructor(board: Board, player1: IPlayer, player2: IPlayer, ai: AI, turn: boolean = true) {
+  constructor(board: Board, player: IPlayer, ai: AI, turn: boolean = true) {
     this.board = board;
     this.turn = turn;
-    this.player1 = player1;
-    this.player2 = player2;
+    this.player = player;
     this.ai = ai;
-    this.currentPlayer = this.player1;
+    this.currentPlayer = this.player;
     this.winner = null;
   }
 }
