@@ -1,4 +1,30 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm run test-all
+# Check Prettier formatting
+npm run check-format ||
+(
+    echo "Prettier checks failed"
+    false;
+)
+#
+# Check ESLint formatting
+npm run check-lint ||
+(
+    echo "ESLint checks failed"
+    false;
+)
+#
+# Check tsconfig formatting
+npm run check-types ||
+(
+    echo "TypeScript type checks checks failed"
+    false;
+)
+
+# Check tsconfig formatting
+npm run build ||
+(
+    echo "Build failed"
+    false;
+)
