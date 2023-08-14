@@ -1,6 +1,6 @@
-"use client"
-import { useState } from "react"
-import Board from "./Board"
+"use client";
+import { useState } from "react";
+import Board from "./Board";
 import toast from "react-hot-toast";
 import {
   AI,
@@ -12,7 +12,7 @@ import {
   TicTacToe,
   checkForTie,
   checkForWinner,
-} from "@/lib"
+} from "@/lib";
 
 interface IProps {
   boardState: BoardState;
@@ -24,37 +24,38 @@ interface IProps {
 
 export default function Game(props: IProps) {
   const [gameoverState, setGameoverState] = useState("");
-  const [boardState, setBoardState] = useState(props.boardState)
-  const [player1Name, setPlayer1Name] = useState(props.player1Name)
-  const [player1Symbol, setPlayer1Symbol] = useState(props.player1Symbol)
-  const [player2Name, setPlayer2Name] = useState(props.player2Name)
-  const [player2Symbol, setPlayer2Symbol] = useState(props.player2Symbol)
-
+  const [boardState, setBoardState] = useState(props.boardState);
+  const [player1Name, setPlayer1Name] = useState(props.player1Name);
+  const [player1Symbol, setPlayer1Symbol] = useState(props.player1Symbol);
+  const [player2Name, setPlayer2Name] = useState(props.player2Name);
+  const [player2Symbol, setPlayer2Symbol] = useState(props.player2Symbol);
 
   let player: Player, ai: AI;
-  if (player1Name === undefined ||
-      player2Name === undefined ||
-      player1Symbol === undefined ||
-      player2Symbol === undefined) {
-    toast("Missing player names or symbols. Creating default game...")
-    player = new Player("Dave", 0, {value: "X"});
-    ai = new AI("Hal", 0, {value: "O"}, AiStrategy.MINIMAX);
+  if (
+    player1Name === undefined ||
+    player2Name === undefined ||
+    player1Symbol === undefined ||
+    player2Symbol === undefined
+  ) {
+    toast("Missing player names or symbols. Creating default game...");
+    player = new Player("Dave", 0, { value: "X" });
+    ai = new AI("Hal", 0, { value: "O" }, AiStrategy.MINIMAX);
   } else {
-    player = new Player(player1Name, 0, player1Symbol)
-    ai = new AI(player2Name, 0, player2Symbol)
+    player = new Player(player1Name, 0, player1Symbol);
+    ai = new AI(player2Name, 0, player2Symbol);
   }
 
-  const boardSize = 3
-  const gameBoard = new GameBoard(boardState)
-  const [game, setGame] = useState(
-    new TicTacToe(gameBoard, player, ai)
-  )
+  const boardSize = 3;
+  const gameBoard = new GameBoard(boardState);
+  const [game, setGame] = useState(new TicTacToe(gameBoard, player, ai));
 
-  function checkGameoverState(boardState: BoardState,) {
-    let isWinner = checkForWinner(boardState, {value: "X"}) || checkForWinner(boardState, {value: "O"})
-    let isTie = checkForTie(boardState)
+  function checkGameoverState(boardState: BoardState) {
+    let isWinner =
+      checkForWinner(boardState, { value: "X" }) ||
+      checkForWinner(boardState, { value: "O" });
+    let isTie = checkForTie(boardState);
     if (isTie) {
-      return "tie"
+      return "tie";
     } else if (isWinner) {
       return "win";
     } else {
@@ -62,15 +63,17 @@ export default function Game(props: IProps) {
     }
   }
 
-  async function handlePlayerClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+  async function handlePlayerClick(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
     if (gameoverState) {
       return false;
     }
 
-    e.preventDefault()
-    let value = e.currentTarget.getAttribute("data-value")
+    e.preventDefault();
+    let value = e.currentTarget.getAttribute("data-value");
     if (value !== "") {
-      toast.error("Please select an empty cell")
+      toast.error("Please select an empty cell");
       return false;
     }
 
@@ -80,21 +83,21 @@ export default function Game(props: IProps) {
     // Human player's turn
     let newBoardState = boardState.map((board_row, r) => {
       return board_row.map((board_cell, c) => {
-        return r === row && c === col ? game.currentPlayer.symbol : board_cell
-      })
-    })
+        return r === row && c === col ? game.currentPlayer.symbol : board_cell;
+      });
+    });
 
     setBoardState(newBoardState);
-    let gameoverMessage = checkGameoverState(newBoardState)
+    let gameoverMessage = checkGameoverState(newBoardState);
     if (gameoverMessage !== "pending") {
       switch (gameoverMessage) {
         case "tie":
           toast.error("It's a tie!");
-          setGameoverState("tie")
+          setGameoverState("tie");
           return true;
         case "win":
-          toast("Winner winner chicken dinner! 🍗")
-          setGameoverState("win")
+          toast("Winner winner chicken dinner! 🍗");
+          setGameoverState("win");
           return true;
       }
     }
@@ -108,22 +111,22 @@ export default function Game(props: IProps) {
         board: JSON.stringify(newBoardState),
       }),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-    }).then(res => res.json())
+    }).then((res) => res.json());
 
     setBoardState(aiBoardState.boardState);
 
-    gameoverMessage = checkGameoverState(aiBoardState.boardState)
+    gameoverMessage = checkGameoverState(aiBoardState.boardState);
     if (gameoverMessage !== "pending") {
       switch (gameoverMessage) {
         case "tie":
           toast.error("It's a tie!");
-          setGameoverState("tie")
+          setGameoverState("tie");
           return true;
         case "win":
-          toast("Winner winner chicken dinner! 🍗")
-          setGameoverState("win")
+          toast("Winner winner chicken dinner! 🍗");
+          setGameoverState("win");
           return true;
       }
     } else {
@@ -138,7 +141,11 @@ export default function Game(props: IProps) {
         <div>{player.name}</div>
         <div>{ai.name}</div>
       </h2>
-      <Board boardState={boardState} boardSize={boardSize} handleTurn={handlePlayerClick} />
+      <Board
+        boardState={boardState}
+        boardSize={boardSize}
+        handleTurn={handlePlayerClick}
+      />
     </section>
-  )
+  );
 }

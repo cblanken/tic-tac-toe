@@ -1,16 +1,84 @@
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
   margin: 0;
   padding: 0;
   border: 0;
@@ -35,7 +103,7 @@ main {
 }
 
 button {
-  background-color: #7B6B6B;
+  background-color: #7b6b6b;
   padding: 0.5rem;
   border-radius: 4px;
   cursor: pointer;
@@ -46,11 +114,11 @@ button {
   flex-direction: column;
   gap: 1rem;
 }
- 
+
 #sidebar input {
-  background-color: #EEE;
+  background-color: #eee;
   line-height: 1rem;
-  font: normal 1.5rem 'sans-serif';
+  font: normal 1.5rem "sans-serif";
   text-align: right;
   padding-right: 0.5rem;
 }
@@ -94,7 +162,7 @@ button {
 #new-game-button {
   display: inline-flex;
   justify-content: space-between;
-  background-color: #5CA85C;
+  background-color: #5ca85c;
   color: white;
   font: normal 1.5rem monospace;
   button-style: inset;
@@ -103,7 +171,7 @@ button {
 }
 
 #reset-button {
-  background-color: #9B6B6B;
+  background-color: #9b6b6b;
   color: white;
   font: normal 1.5rem monospace;
   button-style: inset;
@@ -116,7 +184,7 @@ button {
   border-collapse: collapse;
 }
 
-#board td { 
+#board td {
   width: 7rem;
   height: 7rem;
   text-align: center;
@@ -143,7 +211,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background-color: #B35A5C;
+  background-color: #b35a5c;
   padding: 1rem;
   border-radius: 3px;
 }
