@@ -1,4 +1,4 @@
-import { Board, BoardState, Player, checkForTie, checkForWinner } from "@/lib";
+import { BoardState, Player, checkForTie, checkForWinner } from "@/lib";
 
 const EMPTY = "";
 const MAX_SCORE = Infinity;
@@ -93,12 +93,8 @@ export function buildGameTree(
     root.boardState.forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
             if (root.boardState[rowIndex][colIndex].value === EMPTY) {
-                // let newBoard = JSON.parse(JSON.stringify(root.board.boardState)); // deep clone board state
                 let newBoard = structuredClone(root.boardState); // deep clone board state
                 newBoard[rowIndex][colIndex] = isMaximizer ? maximizer.symbol : minimizer.symbol;
-
-                // Select player for next level
-                const player = (isMaximizer ? maximizer : minimizer);
 
                 let newNode = new Node(newBoard, [rowIndex, colIndex], root);
                 newNode.heuristic = evaluate(newBoard, minimizer, maximizer) - depth;

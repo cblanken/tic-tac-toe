@@ -3,9 +3,7 @@ import {
   AI,
   AiStrategy,
   Board,
-  BoardState,
   Player,
-  PlayerSymbol,
   TicTacToe,
 } from "@/lib"
 

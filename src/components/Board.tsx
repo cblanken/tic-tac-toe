@@ -1,8 +1,6 @@
 "use client"
-import { useState, useEffect } from "react"
 import BoardCell from "./BoardCell"
-import type { PlayerSymbol } from "@/lib"
-import { AI, AiStrategy, Board as GameBoard, BoardState } from "@/lib"
+import { BoardState } from "@/lib"
 
 
 interface IProps {

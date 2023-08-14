@@ -138,8 +138,8 @@ export abstract class AiStrategy {
   public static MINIMAX: PlayStrategy = (boardState: BoardState, player: Player, enemy: Player): BoardState => { 
     let board = new Board(boardState)
     let rootNode = new minimax.Node(board.boardState, []); 
-    rootNode = minimax.buildGameTree(rootNode, enemy, player, true);
-    let bestMove = minimax.findBestMove(rootNode, enemy, player);
+    let gameTree = minimax.buildGameTree(rootNode, enemy, player, true);
+    let bestMove = minimax.findBestMove(gameTree, enemy, player);
     if (bestMove) {
       board.updateStateByIndex(bestMove[0], bestMove[1], player.symbol)
     } else {
