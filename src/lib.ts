@@ -29,7 +29,8 @@ export class Board {
 type PlayStrategy = (
   boardState: BoardState,
   player: Player,
-  enemy: Player
+  enemy: Player,
+  gameTree?: any
 ) => BoardState;
 
 export class IPlayer {
@@ -134,6 +135,7 @@ export function checkForTie(boardState: BoardState) {
 export class Player extends IPlayer {}
 
 export abstract class AiStrategy {
+  // public static gameTree: any;
   public static RANDOM: PlayStrategy = (
     boardState: BoardState,
     player: Player
@@ -156,11 +158,11 @@ export abstract class AiStrategy {
   public static MINIMAX: PlayStrategy = (
     boardState: BoardState,
     player: Player,
-    enemy: Player
+    enemy: Player,
+    gameTree: any
   ): BoardState => {
     let board = new Board(boardState);
-    let rootNode = new minimax.Node(board.boardState, []);
-    let gameTree = minimax.buildGameTree(rootNode, enemy, player, true);
+    console.log("GAME TREE", gameTree);
     let bestMove = minimax.findBestMove(gameTree, enemy, player);
     if (bestMove) {
       board.updateStateByIndex(bestMove[0], bestMove[1], player.symbol);

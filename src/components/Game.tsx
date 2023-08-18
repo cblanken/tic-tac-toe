@@ -13,6 +13,7 @@ import {
   checkForTie,
   checkForWinner,
 } from "@/lib";
+import MinimaxTree, { TreeNode, TreeProps } from "@/components/MinimaxTree";
 
 interface IProps {
   boardState: BoardState;
@@ -134,18 +135,53 @@ export default function Game(props: IProps) {
     }
   }
 
+  const rootNode: TreeNode = {
+    name: "T",
+    children: [
+      {
+        name: "A",
+      },
+      {
+        name: "B",
+      },
+      {
+        name: "C",
+      },
+      {
+        name: "D",
+      },
+      {
+        name: "E",
+      },
+      {
+        name: "F",
+      },
+      {
+        name: "G",
+      },
+      {
+        name: "H",
+      },
+    ],
+  };
+
   return (
-    <section className="flex flex-col gap-4 text-center text-black">
-      <h1 className="font-bold text-4xl">Tic-Tac-Toe</h1>
-      <h2 className="flex justify-between">
-        <div>{player.name}</div>
-        <div>{ai.name}</div>
-      </h2>
-      <Board
-        boardState={boardState}
-        boardSize={boardSize}
-        handleTurn={handlePlayerClick}
-      />
-    </section>
+    <>
+      <section className="flex flex-col gap-4 text-center text-black">
+        <h1 className="font-bold text-4xl">Tic-Tac-Toe</h1>
+        <h2 className="flex justify-between">
+          <div>{player.name}</div>
+          <div>{ai.name}</div>
+        </h2>
+        <Board
+          boardState={boardState}
+          boardSize={boardSize}
+          handleTurn={handlePlayerClick}
+        />
+      </section>
+      <section className="text-blue bg-black rounded-lg">
+        <MinimaxTree rootNode={rootNode} width={800} height={800} />
+      </section>
+    </>
   );
 }

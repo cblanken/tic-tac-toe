@@ -15,50 +15,12 @@ const lightpurple = "#374469";
 const white = "#ffffff";
 export const background = "#272b4d";
 
-interface TreeNode {
+export interface TreeNode {
   name: string;
   children?: this[];
 }
 
 type HierarchyNode = HierarchyPointNode<TreeNode>;
-
-const rawTree: TreeNode = {
-  name: "T",
-  children: [
-    {
-      name: "A",
-      children: [{ name: "A1" }, { name: "A2" }, { name: "A3" }],
-    },
-    {
-      name: "B",
-      children: [{ name: "B1" }, { name: "B2" }, { name: "B3" }],
-    },
-    {
-      name: "C",
-      children: [{ name: "C1" }, { name: "C2" }, { name: "C3" }],
-    },
-    {
-      name: "D",
-      children: [{ name: "D1" }, { name: "D2" }, { name: "D3" }],
-    },
-    {
-      name: "E",
-      children: [{ name: "E1" }, { name: "E2" }, { name: "E3" }],
-    },
-    {
-      name: "F",
-      children: [{ name: "F1" }, { name: "F2" }, { name: "F3" }],
-    },
-    {
-      name: "G",
-      children: [{ name: "G1" }, { name: "G2" }, { name: "G3" }],
-    },
-    {
-      name: "H",
-      children: [{ name: "H1" }, { name: "H2" }, { name: "H3" }],
-    },
-  ],
-};
 
 function RootNode({ node }: { node: HierarchyNode }) {
   return (
@@ -158,17 +120,19 @@ function Node({ node }: { node: HierarchyNode }) {
 const defaultMargin = { top: 10, left: 80, right: 80, bottom: 10 };
 
 export type TreeProps = {
+  rootNode: TreeNode;
   width: number;
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
 };
 
 export default function MinimaxTree({
+  rootNode,
   width,
   height,
   margin = defaultMargin,
 }: TreeProps) {
-  const data = useMemo(() => hierarchy(rawTree), []);
+  const data = useMemo(() => hierarchy(rootNode), []);
   const yMax = height - margin.top - margin.bottom;
   const xMax = width - margin.left - margin.right;
 

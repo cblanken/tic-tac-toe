@@ -10,7 +10,7 @@ export class Node {
   depth: number;
   heuristic: number = 0; // default heuristic value for leaf nodes
   move: Array<number>;
-  parent: Node | null;
+  name: string;
 
   constructor(
     boardState: BoardState,
@@ -21,7 +21,7 @@ export class Node {
     this.boardState = boardState;
     this.depth = depth;
     this.move = move; // position on the board where a symbol is placed
-    this.parent = parent; // null parent indicates root node
+    this.name = move.toString();
   }
 
   addChild(child: Node) {
